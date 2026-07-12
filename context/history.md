@@ -35,6 +35,29 @@ what is active now, and summarize shipped work here after it lands.
   tokens/brand, mini-games, GSAP/sound/haptics, or PWA/Capacitor work yet —
   those are scoped to later features per `context/features/`.
 
+### 2026-07-12 — Feature 02: Design System and Brand Foundation
+
+- Built the full design token system in `src/styles/tokens.css`: neutral and
+  semantic colors, one accent color per track slug (all 11 tracks), typography/
+  spacing/radius/border/elevation/motion/feedback-intensity/z-index scales,
+  touch-target sizing, and safe-area insets — replacing the feature 01
+  placeholder tokens.
+- Refined the Logicling mascot mark (`brand/logiclings-logo.svg`) and
+  generated favicon and app icon assets into `public/icons/` (`favicon.svg`,
+  `mascot.svg`, `icon-192.png`, `icon-512.png`), wired the new favicon into
+  `index.html`.
+- Built the first core UI primitives — `Button`, `IconButton`, `Badge`
+  (semantic and track-accent tones), `Text`, `Heading`, `Container` atoms and
+  a `Card` molecule — each with Storybook stories covering key variants/states
+  and Vitest/RTL tests.
+- Added a `Foundations/Design Tokens` Storybook story showcasing the palette,
+  typography scale, spacing scale, and radius scale; wired `.storybook/preview.ts`
+  to load global tokens so components render on-brand in Storybook.
+- `npm run typecheck`, `lint`, `test`, `build`, and `build-storybook` all pass.
+- No app shell/navigation, track-specific mascot variants, per-game motion
+  recipes, sound/haptics, or dark theme work yet — those remain scoped to
+  later features.
+
 ## Notes
 
 - Keep entries concise but useful.
