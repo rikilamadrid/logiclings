@@ -1,0 +1,36 @@
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+dist-ssr/
+build/
+.vercel/
+
+# Env
+.env
+.env.local
+.env.*.local
+
+# Testing / coverage
+coverage/
+
+# Storybook
+storybook-static/
+
+# Capacitor native projects (generated)
+ios/
+android/
+
+# Editor / OS
+.DS_Store
+.vscode/*
+!.vscode/extensions.json
+.idea/
+
+# Claude Code local settings
+.claude/settings.local.json
+
+# Logs
+*.log
+npm-debug.log*

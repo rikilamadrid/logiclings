@@ -1,0 +1,16 @@
+<svg width="1024" height="1024" viewBox="0 0 1024 1024" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
+  <title id="title">Logiclings Logo</title>
+  <desc id="desc">A soft rounded logic creature shaped from a code loop with two node eyes and a connector tail.</desc>
+  <rect width="1024" height="1024" rx="224" fill="#111827"/>
+  <path d="M718 312C802 372 842 470 817 561C789 663 691 735 562 747C427 759 300 707 247 611C197 520 221 413 305 346C389 279 541 252 655 287C677 294 698 302 718 312Z" fill="#7C3AED"/>
+  <path d="M707 318C788 381 822 473 797 556C769 648 678 714 560 725C437 737 319 690 269 604C222 523 245 427 322 367C401 305 544 280 648 311C669 317 689 323 707 318Z" fill="#A78BFA"/>
+  <circle cx="414" cy="486" r="52" fill="#F8FAFC"/>
+  <circle cx="612" cy="486" r="52" fill="#F8FAFC"/>
+  <circle cx="431" cy="499" r="21" fill="#111827"/>
+  <circle cx="595" cy="499" r="21" fill="#111827"/>
+  <path d="M431 622C474 653 553 653 594 622" stroke="#111827" stroke-width="34" stroke-linecap="round"/>
+  <path d="M281 400L205 472L281 544" stroke="#67E8F9" stroke-width="48" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M743 400L819 472L743 544" stroke="#67E8F9" stroke-width="48" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M676 708C735 747 777 796 801 856" stroke="#A78BFA" stroke-width="46" stroke-linecap="round"/>
+  <circle cx="806" cy="872" r="35" fill="#67E8F9"/>
+</svg>
