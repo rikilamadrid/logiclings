@@ -1,0 +1,65 @@
+/**
+ * Design tokens entry point.
+ * Placeholder categories only — real values arrive in feature 02
+ * (brand identity and design system).
+ */
+
+:root {
+  /* Color */
+  --color-bg: #ffffff;
+  --color-surface: #ffffff;
+  --color-text: #000000;
+  --color-text-muted: #000000;
+  --color-border: #000000;
+  --color-accent: #000000;
+  --color-success: #000000;
+  --color-warning: #000000;
+  --color-danger: #000000;
+
+  /* Spacing */
+  --space-xs: 0px;
+  --space-sm: 0px;
+  --space-md: 0px;
+  --space-lg: 0px;
+  --space-xl: 0px;
+
+  /* Radius */
+  --radius-sm: 0px;
+  --radius-md: 0px;
+  --radius-lg: 0px;
+  --radius-full: 0px;
+
+  /* Typography */
+  --font-family-base: system-ui, sans-serif;
+  --font-size-sm: 1rem;
+  --font-size-md: 1rem;
+  --font-size-lg: 1rem;
+  --font-weight-regular: 400;
+  --font-weight-bold: 700;
+
+  /* Motion */
+  --motion-duration-fast: 0ms;
+  --motion-duration-base: 0ms;
+  --motion-duration-slow: 0ms;
+  --motion-easing-standard: linear;
+
+  /* Elevation */
+  --elevation-1: none;
+  --elevation-2: none;
+  --elevation-3: none;
+
+  /* Z-index */
+  --z-index-base: 0;
+  --z-index-nav: 0;
+  --z-index-modal: 0;
+  --z-index-toast: 0;
+
+  /* Touch targets */
+  --touch-target-min: 44px;
+
+  /* Safe-area insets */
+  --safe-area-inset-top: env(safe-area-inset-top);
+  --safe-area-inset-right: env(safe-area-inset-right);
+  --safe-area-inset-bottom: env(safe-area-inset-bottom);
+  --safe-area-inset-left: env(safe-area-inset-left);
+}

@@ -13,6 +13,12 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 - Full MVP feature breakdown in `context/features/01`–`12`, covering project
   foundation, design system, app shell/catalog, mini-game runtime, the three
   MVP mini-games, auth/progress, streaks, profile, PWA, and Capacitor.
+- Scaffolded the Vite + React 19 + TypeScript strict app foundation: React
+  Router with placeholder pages for every MVP route, ESLint + Prettier,
+  Vitest + React Testing Library, Storybook, the base project folder
+  structure, a placeholder design-token entry point, a mobile-first app
+  shell with safe-area-aware layout and nav, and a GitHub Actions CI
+  workflow running typecheck/lint/test/build.
 
 ### Changed
 

@@ -1,0 +1,27 @@
+.shell {
+  display: flex;
+  flex-direction: column;
+  min-height: 100svh;
+  padding-top: var(--safe-area-inset-top);
+  padding-right: var(--safe-area-inset-right);
+  padding-left: var(--safe-area-inset-left);
+}
+
+.main {
+  flex: 1;
+  padding: var(--space-md);
+}
+
+.nav {
+  display: flex;
+  gap: var(--space-md);
+  padding: var(--space-md);
+  padding-bottom: calc(var(--space-md) + var(--safe-area-inset-bottom));
+  border-top: 1px solid var(--color-border);
+}
+
+.navLink {
+  min-height: var(--touch-target-min);
+  display: flex;
+  align-items: center;
+}
