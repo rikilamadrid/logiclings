@@ -1,0 +1,21 @@
+.container {
+  width: 100%;
+  max-width: 480px;
+  margin-inline: auto;
+}
+
+.paddingNone {
+  padding: 0;
+}
+
+.paddingSm {
+  padding: var(--space-sm);
+}
+
+.paddingMd {
+  padding: var(--space-md);
+}
+
+.paddingLg {
+  padding: var(--space-lg);
+}

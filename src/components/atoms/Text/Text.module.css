@@ -1,0 +1,37 @@
+.text {
+  margin: 0;
+  font-family: var(--font-family-base);
+  line-height: var(--line-height-base);
+}
+
+.sizeSm {
+  font-size: var(--font-size-sm);
+}
+
+.sizeMd {
+  font-size: var(--font-size-md);
+}
+
+.sizeLg {
+  font-size: var(--font-size-lg);
+}
+
+.toneDefault {
+  color: var(--color-text);
+}
+
+.toneMuted {
+  color: var(--color-text-muted);
+}
+
+.weightRegular {
+  font-weight: var(--font-weight-regular);
+}
+
+.weightMedium {
+  font-weight: var(--font-weight-medium);
+}
+
+.weightBold {
+  font-weight: var(--font-weight-bold);
+}

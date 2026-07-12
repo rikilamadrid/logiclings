@@ -9,6 +9,18 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 
 ### Added
 
+- Full design token system in `src/styles/tokens.css`: neutral and semantic
+  colors, one accent color per track slug, typography/spacing/radius/border/
+  elevation/motion/feedback-intensity/z-index scales, touch-target sizing, and
+  safe-area insets.
+- Refined the Logicling mascot mark (`brand/logiclings-logo.svg`) and
+  generated favicon and app icon assets into `public/icons/`
+  (`favicon.svg`, `mascot.svg`, `icon-192.png`, `icon-512.png`).
+- Core UI primitives with Storybook stories and tests: `Button`, `IconButton`,
+  `Badge` (semantic and track-accent tones), `Text`, `Heading`, and
+  `Container` atoms, plus a `Card` molecule.
+- A `Foundations/Design Tokens` Storybook story showcasing the full color,
+  typography, spacing, and radius scales.
 - Initial project setup.
 - Full MVP feature breakdown in `context/features/01`–`12`, covering project
   foundation, design system, app shell/catalog, mini-game runtime, the three
