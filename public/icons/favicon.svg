@@ -1,0 +1,10 @@
+<svg width="64" height="64" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title">
+  <title id="title">Logiclings favicon</title>
+  <rect width="512" height="512" rx="112" fill="#1F2430"/>
+  <path d="M360 156C401 186 421 235 408 281C394 332 345 368 281 374C213 380 149 354 123 306C98 261 110 207 152 174C195 140 271 127 328 144C339 147 350 151 360 156Z" fill="#7C3AED"/>
+  <path d="M354 159C395 191 411 237 399 279C385 325 339 358 280 364C218 370 159 347 134 304C111 263 122 215 161 185C201 154 273 141 325 157C335 160 345 163 354 159Z" fill="#A78BFA"/>
+  <circle cx="207" cy="243" r="30" fill="#FAF9F7"/>
+  <circle cx="306" cy="243" r="30" fill="#FAF9F7"/>
+  <circle cx="217" cy="250" r="13" fill="#1F2430"/>
+  <circle cx="296" cy="250" r="13" fill="#1F2430"/>
+</svg>

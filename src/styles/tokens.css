@@ -1,61 +1,108 @@
 /**
  * Design tokens entry point.
- * Placeholder categories only — real values arrive in feature 02
- * (brand identity and design system).
+ * Soft geometric visual language: calm neutral surfaces, bright track accents.
  */
 
 :root {
-  /* Color */
-  --color-bg: #ffffff;
+  /* Neutral color */
+  --color-bg: #faf9f7;
   --color-surface: #ffffff;
-  --color-text: #000000;
-  --color-text-muted: #000000;
-  --color-border: #000000;
-  --color-accent: #000000;
-  --color-success: #000000;
-  --color-warning: #000000;
-  --color-danger: #000000;
+  --color-surface-muted: #f1efec;
+  --color-text: #1f2430;
+  --color-text-muted: #5b6472;
+  --color-text-on-accent: #ffffff;
+  --color-border: #e4e1db;
+  --color-border-strong: #cbc7be;
 
-  /* Spacing */
-  --space-xs: 0px;
-  --space-sm: 0px;
-  --space-md: 0px;
-  --space-lg: 0px;
-  --space-xl: 0px;
+  /* Semantic color */
+  --color-accent: #7c3aed;
+  --color-accent-strong: #6d28d9;
+  --color-accent-muted: #ede6ff;
+  --color-success: #22c55e;
+  --color-warning: #f59e0b;
+  --color-danger: #ef4444;
+  --color-info: #0ea5e9;
 
-  /* Radius */
-  --radius-sm: 0px;
-  --radius-md: 0px;
-  --radius-lg: 0px;
-  --radius-full: 0px;
+  /* Track accent color (one per track slug) */
+  --color-track-frontend: #f97316;
+  --color-track-backend: #10b981;
+  --color-track-apis: #0ea5e9;
+  --color-track-databases: #6366f1;
+  --color-track-algorithms: #ec4899;
+  --color-track-system-design: #14b8a6;
+  --color-track-networking: #3b82f6;
+  --color-track-security: #ef4444;
+  --color-track-devops: #84cc16;
+  --color-track-ai-fundamentals: #a855f7;
+  --color-track-agentic-coding: #22d3ee;
 
   /* Typography */
-  --font-family-base: system-ui, sans-serif;
-  --font-size-sm: 1rem;
+  --font-family-base:
+    system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --font-size-xs: 0.75rem;
+  --font-size-sm: 0.875rem;
   --font-size-md: 1rem;
-  --font-size-lg: 1rem;
+  --font-size-lg: 1.25rem;
+  --font-size-xl: 1.5rem;
+  --font-size-2xl: 2rem;
+  --font-size-3xl: 2.5rem;
   --font-weight-regular: 400;
+  --font-weight-medium: 500;
   --font-weight-bold: 700;
+  --line-height-tight: 1.2;
+  --line-height-base: 1.5;
 
-  /* Motion */
-  --motion-duration-fast: 0ms;
-  --motion-duration-base: 0ms;
-  --motion-duration-slow: 0ms;
-  --motion-easing-standard: linear;
+  /* Spacing */
+  --space-2xs: 0.25rem;
+  --space-xs: 0.5rem;
+  --space-sm: 0.75rem;
+  --space-md: 1rem;
+  --space-lg: 1.5rem;
+  --space-xl: 2rem;
+  --space-2xl: 3rem;
+  --space-3xl: 4rem;
+
+  /* Radius */
+  --radius-sm: 0.5rem;
+  --radius-md: 0.75rem;
+  --radius-lg: 1.25rem;
+  --radius-full: 999px;
+
+  /* Borders */
+  --border-width-sm: 1px;
+  --border-width-md: 2px;
 
   /* Elevation */
-  --elevation-1: none;
-  --elevation-2: none;
-  --elevation-3: none;
+  --elevation-0: none;
+  --elevation-1:
+    0 1px 2px rgba(31, 36, 48, 0.06), 0 1px 1px rgba(31, 36, 48, 0.04);
+  --elevation-2:
+    0 4px 8px rgba(31, 36, 48, 0.08), 0 2px 4px rgba(31, 36, 48, 0.05);
+  --elevation-3:
+    0 12px 24px rgba(31, 36, 48, 0.12), 0 4px 8px rgba(31, 36, 48, 0.06);
+
+  /* Motion */
+  --motion-duration-fast: 120ms;
+  --motion-duration-base: 200ms;
+  --motion-duration-slow: 360ms;
+  --motion-easing-standard: cubic-bezier(0.4, 0, 0.2, 1);
+  --motion-easing-decelerate: cubic-bezier(0, 0, 0.2, 1);
+  --motion-easing-accelerate: cubic-bezier(0.4, 0, 1, 1);
+
+  /* Feedback intensity (transform scalars for game feedback states) */
+  --feedback-intensity-subtle: 1.02;
+  --feedback-intensity-standard: 1.05;
+  --feedback-intensity-strong: 1.12;
 
   /* Z-index */
   --z-index-base: 0;
-  --z-index-nav: 0;
-  --z-index-modal: 0;
-  --z-index-toast: 0;
+  --z-index-nav: 10;
+  --z-index-modal: 100;
+  --z-index-toast: 200;
 
   /* Touch targets */
   --touch-target-min: 44px;
+  --touch-target-comfortable: 48px;
 
   /* Safe-area insets */
   --safe-area-inset-top: env(safe-area-inset-top);

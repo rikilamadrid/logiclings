@@ -1,0 +1,78 @@
+.showcase {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xl);
+  padding: var(--space-lg);
+  font-family: var(--font-family-base);
+  color: var(--color-text);
+  background: var(--color-bg);
+}
+
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.sectionTitle {
+  margin: 0;
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+}
+
+.swatchGrid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-md);
+}
+
+.swatchCard {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-2xs);
+  width: 140px;
+}
+
+.swatch {
+  width: 100%;
+  height: 64px;
+  border-radius: var(--radius-md);
+  border: var(--border-width-sm) solid var(--color-border);
+}
+
+.tokenName {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-muted);
+  text-align: center;
+  word-break: break-all;
+}
+
+.typeSample {
+  margin: 0;
+}
+
+.spacingList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+}
+
+.spacingRow {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+}
+
+.spacingBar {
+  height: var(--space-md);
+  background: var(--color-accent);
+  border-radius: var(--radius-sm);
+}
+
+.radiusSample {
+  width: 100%;
+  height: 64px;
+  background: var(--color-accent-muted);
+  border: var(--border-width-sm) solid var(--color-accent);
+}
