@@ -31,3 +31,6 @@ playwright-report
 test-results
 coverage
 *.tsbuildinfo
+
+# Generated lesson docs
+docs/
