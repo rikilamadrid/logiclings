@@ -30,6 +30,33 @@ Not Started
 
 <!-- Completed features (append only) -->
 
+### Timezone-Aware Streak Tracking
+
+- Added a `Streak` Prisma model (`currentDays`, `longestDays`,
+  `lastQualifiedDate`, `timezone`), one row per user, with a migration.
+- Pure streak domain service (`src/server/services/streakService.ts`):
+  resolves a completion instant to the learner's local calendar date via
+  `Intl.DateTimeFormat`, increments `currentDays` on the day directly after
+  `lastQualifiedDate`, resets to 1 on a missed day, and keeps `longestDays`
+  accurate — comparing calendar-date strings rather than instants keeps DST
+  transitions out of the comparison entirely.
+- The browser's current IANA timezone is captured with every completion
+  rather than stored once at sign-up, so a traveling learner's streak always
+  qualifies against where they actually are.
+- Streak qualification happens as part of the existing completion mutation
+  (`POST /api/progress/complete`) rather than a separate user action;
+  `GET /api/streak` reads the current streak for Home. Same strict layering
+  as progress: route handler → session check → Zod validation → domain
+  service → Prisma repository.
+- Home's streak card is wired to real data via a `useStreakQuery` TanStack
+  Query hook.
+- A small streak micro-reaction on qualifying (a `streak` audio cue plus a
+  CSS-transitioned message on the result screen's save panel), respecting
+  `prefers-reduced-motion` and never required to understand the result.
+- Unit tests cover increment, reset, and longest-streak logic across
+  date-boundary and DST edge cases (spring-forward and fall-back). Opt-in
+  integration tests (`INTEGRATION_DB=1`) cover the real Prisma repository.
+
 ### Event Bubbling Bubbles (First Mini-Game)
 
 - Built the first real, shippable mini-game (`src/games/event-bubbling-bubbles`)
