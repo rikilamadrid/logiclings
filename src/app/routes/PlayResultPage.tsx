@@ -7,6 +7,10 @@ import {
   getReferenceFixtureLevel,
   referenceFixtureLesson,
 } from '../../games/_reference-game/fixture'
+import { getEventBubblingLevel } from '../../games/event-bubbling-bubbles/levels'
+import { getEventBubblingTransferQuestion } from '../../games/event-bubbling-bubbles/reflection'
+
+const EVENT_BUBBLING_LESSON_SLUG = 'event-bubbling-bubbles'
 
 export function PlayResultPage() {
   const { lessonSlug } = useParams<{ lessonSlug: string }>()
@@ -14,7 +18,34 @@ export function PlayResultPage() {
   const location = useLocation()
   const result = location.state as GameResult | null
 
-  if (!result || lessonSlug !== referenceFixtureLesson.slug) {
+  if (!result) {
+    return (
+      <Container padding="none">
+        <PlaceholderPage
+          title="No recent result"
+          description="Play a lesson first to see your result and reflection here."
+        />
+      </Container>
+    )
+  }
+
+  if (lessonSlug === EVENT_BUBBLING_LESSON_SLUG) {
+    const level = getEventBubblingLevel(result.levelMode)
+
+    return (
+      <Container padding="none">
+        <ResultScreen
+          level={level}
+          result={result}
+          transferQuestion={getEventBubblingTransferQuestion(result.levelMode)}
+          onRetry={() => navigate(`/play/${lessonSlug}?mode=${result.levelMode}`)}
+          onContinue={() => navigate('/')}
+        />
+      </Container>
+    )
+  }
+
+  if (lessonSlug !== referenceFixtureLesson.slug) {
     return (
       <Container padding="none">
         <PlaceholderPage

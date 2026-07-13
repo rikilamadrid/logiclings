@@ -9,6 +9,37 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 
 ### Added
 
+- **Event Bubbling Bubbles**, the first shippable mini-game
+  (`src/games/event-bubbling-bubbles`), teaching DOM event bubbling/
+  propagation through a nested-bubble metaphor: the learner selects which
+  ancestor layers react to a tap, watches the click bubble outward, and gets
+  a layer-by-layer correctness breakdown. Discover, apply, and master
+  `LevelDefinition`s and level content (varied nesting depth per mode) are
+  built against the feature 04 runtime contract with no forking.
+  - Master introduces `stopPropagation`-equivalent "stop" placement: the
+    learner places a stop at a layer, then predicts the new reacting set —
+    the stopped layer still reacts, nothing further outward does.
+  - Pure domain logic (`domain/bubbling.ts`) computes the reacting-layer set
+    and compares it against the learner's selection; covered by unit tests
+    alongside a component test suite exercising correct/incorrect
+    predictions, master stop placement, and a keyboard-only playthrough.
+  - GSAP timeline animates the bubble outward through reacting layers on
+    the runtime's `simulating` stage, with a reduced-motion fallback that
+    steps through the same sequence via staged highlights instead.
+  - Sound cues (tap, place, valid, invalid, success, mistake) and haptics are
+    fully optional and never the sole feedback channel; every layer's
+    reacting/selected state is also shown visually and in text.
+  - Storybook stories cover the predicting, master stop-placement, transfer,
+    and explaining game states, plus the shared `BubbleLayerList` visual in
+    its mid-propagation, success, and mistake states.
+  - Wired into `/play/event-bubbling-bubbles` and its result screen.
+- Centralized sound-cue service (`src/lib/audio/audioService.ts`): a small
+  Web Audio abstraction that synthesizes short tones per cue rather than
+  loading sample files, with a global enable/disable switch so mini-games
+  never hardcode audio playback.
+- Haptics service stub (`src/lib/haptics/hapticsService.ts`): a no-op seam
+  mini-games can call now, ready to back with real Capacitor Haptics calls
+  once the native shell lands (feature 12).
 - Mini-game runtime contract in `src/games/runtime`: a `LevelDefinition`-driven
   reducer (`runtimeReducer`) modeling the Hook → Predict → Simulate → React →
   Explain → Transfer rhythm as explicit stages, pause/restart, attempt
