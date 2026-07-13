@@ -1,63 +1,28 @@
-# Current Feature: Mini-Game Runtime Contract
+# Current Feature
 
 Use this file as the live tracker for what is active now. Keep it lean. When a
 feature lands, summarize the completed work in `context/history.md` and move
 this file forward to the next task.
 
-Branch: `feature/04-minigame-runtime-contract`
+Branch: `main` until a concrete feature or fix is scoped, then branch per task.
 
 ## Status
 
-In Progress
+<!-- Not Started | In Progress | Complete -->
 
 ## Goals
 
-- Runtime contract in `src/games/runtime`: game lifecycle states (idle,
-  predicting, simulating, reacting, explaining, transfer, complete),
-  pause/restart, attempt tracking, scoring interface, result event shape, an
-  accessibility-mode flag, and a renderer-agnostic mount boundary (DOM/SVG/canvas).
-- `LevelDefinition`-driven game loading per `context/project-overview.md` data
-  models (`mode: discover | apply | master`, objective, mechanic, winCondition, reflection).
-- `/play/:lessonSlug` route: resolves the lesson from the catalog (feature 03),
-  mounts the appropriate game via the runtime, and enforces the Hook → Predict
-  → Simulate → React → Explain → Transfer rhythm at the runtime level (games
-  implement the mechanic; the runtime orchestrates rhythm and transitions).
-- Shared Result/Reflection component at `/play/:lessonSlug/result`: what
-  happened, why, the named concept, one transfer question/alternate scenario,
-  and score/mastery/XP/streak placeholders (real mastery/streak wiring is feature 06/07).
-- A minimal reference/demo mini-game (not a real track game) proving the
-  contract end-to-end — clearly marked as a runtime fixture, not shippable content.
-- Reduced-motion and sound-off state exposed at the runtime level so games can
-  query it.
-- Keyboard/touch input abstraction so games don't each reimplement input handling.
+<!-- Bullet points of what success looks like -->
 
 ---
 
 ## Notes
 
-- Out of scope: any real, shippable mini-game (Event Bubbling Bubbles is
-  feature 05); sound/haptics implementation details beyond runtime-exposed
-  settings; persisted attempts/progress/mastery (feature 06 — this feature
-  may emit result events but doesn't need to persist them); GSAP timeline
-  work beyond what's needed to prove the contract.
-- Runtime transitions must work with keyboard-only and touch input.
-- Pause/restart controls must be discoverable and accessible.
-- Reduced-motion must change how transitions render, not just skip decoration.
-- Result/reflection screen must be readable and navigable via screen reader.
-- Keep the contract minimal — add fields only when a concrete game or the
-  result screen needs them, not speculatively.
-- Likely files: `src/games/runtime/types.ts`, `src/games/runtime/useGameRuntime.ts`
-  (or reducer-based runtime hook), `src/games/runtime/GameHost.tsx`,
-  `src/games/runtime/ResultScreen.tsx`, `src/games/shared/`,
-  `src/games/_reference-game/` (demo game, name clearly as non-shippable),
-  `src/app/routes/PlayLessonPage.tsx`, `PlayResultPage.tsx`.
-- Acceptance: reference game runs end-to-end through all six rhythm stages via
-  the runtime; result/reflection screen renders real data from a completed
-  run; runtime exposes reduced-motion and sound-off state; unit tests cover
-  the runtime lifecycle/reducer and scoring interface; Storybook stories for
-  the Result/Reflection screen in success and mistake states; `npm run build`
-  passes; `CHANGELOG.md` updated.
-- Suggested commit: `feat: add mini-game runtime contract and result/reflection UI`
+<!-- Additional context, constraints, or details from spec -->
+
+- Keep this file current before implementation starts.
+- Update it again after merge so it reflects reality on `main`.
+- Do not let this turn into a full project diary; that belongs in `context/history.md`.
 
 ---
 
@@ -80,3 +45,24 @@ In Progress
 - Home (`/`), Tracks (`/tracks`), and Track Detail (`/tracks/:trackSlug`)
   routes now render real, catalog-derived content instead of placeholders.
 - Profile and Settings remain navigable skeleton pages for later features.
+
+### Mini-Game Runtime Contract
+
+- Added the shared mini-game runtime in `src/games/runtime`: a reducer-driven
+  lifecycle (idle → predicting → simulating → reacting → explaining →
+  transfer → complete), pause/restart, attempt tracking, a pure scoring
+  function, a `GameResult` event shape, reduced-motion/sound-off
+  accessibility state synced from `prefers-reduced-motion`, and a
+  renderer-agnostic `GameDefinition`/mount boundary (DOM/SVG/canvas).
+- Built `GameHost` to mount games via the contract with pause/restart
+  controls, a stage-progress indicator, and focus management across stage
+  transitions for keyboard and screen-reader users, plus a `usePressable`
+  keyboard/touch input abstraction.
+- Added a shared `ResultScreen` (with Storybook stories for success and
+  mistake states) and wired `/play/:lessonSlug` and
+  `/play/:lessonSlug/result` to the runtime.
+- Added a `LevelDefinition` Zod schema and a non-shippable reference/demo
+  mini-game (`src/games/_reference-game`, reachable at
+  `/play/runtime-fixture`) proving the contract end-to-end.
+- Real catalog lessons without a built game render an honest "not built yet"
+  placeholder until their mini-games ship in later features.
