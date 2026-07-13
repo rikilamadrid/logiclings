@@ -9,8 +9,12 @@ import {
   getReferenceFixtureLevel,
   referenceFixtureLesson,
 } from '../../games/_reference-game/fixture'
+import { eventBubblingGameDefinition } from '../../games/event-bubbling-bubbles/gameDefinition'
+import { getEventBubblingLevel } from '../../games/event-bubbling-bubbles/levels'
 import { useLessonsQuery } from '../../learning/queries'
 import type { LevelMode } from '../../learning/schemas/level'
+
+const EVENT_BUBBLING_LESSON_SLUG = 'event-bubbling-bubbles'
 
 const VALID_MODES: LevelMode[] = ['discover', 'apply', 'master']
 
@@ -40,6 +44,21 @@ export function PlayLessonPage() {
           lessonSlug={lessonSlug}
           level={level}
           game={referenceGameDefinition}
+          onComplete={handleComplete}
+        />
+      </Container>
+    )
+  }
+
+  if (lessonSlug === EVENT_BUBBLING_LESSON_SLUG) {
+    const level = getEventBubblingLevel(parseLevelMode(searchParams.get('mode')))
+
+    return (
+      <Container padding="none">
+        <GameHost
+          lessonSlug={lessonSlug}
+          level={level}
+          game={eventBubblingGameDefinition}
           onComplete={handleComplete}
         />
       </Container>
