@@ -9,6 +9,18 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 
 ### Added
 
+- Typed, Zod-validated learning catalog in `src/learning`: `Track` and `Lesson`
+  schemas, seed data for the Frontend, System Design, and Agentic Coding
+  tracks, and a `deriveLessonState` utility for locked/available/completed
+  lesson states based on `prerequisiteLessonIds`.
+- TanStack Query hooks (`src/learning/queries.ts`) for reading catalog data,
+  keeping the data-fetching seam in place for the future API-backed version.
+- Real app shell navigation: a `NavBar` organism (mobile bottom tab bar,
+  desktop top bar) and an `ErrorBoundary`, wired into `AppShell`.
+- `TrackCard` and `LessonListItem` molecules with Storybook stories, used to
+  render `/tracks` and `/tracks/:trackSlug`.
+- Home (`/`), Tracks (`/tracks`), and Track Detail (`/tracks/:trackSlug`)
+  routes now render real, catalog-derived content instead of placeholders.
 - Full design token system in `src/styles/tokens.css`: neutral and semantic
   colors, one accent color per track slug, typography/spacing/radius/border/
   elevation/motion/feedback-intensity/z-index scales, touch-target sizing, and

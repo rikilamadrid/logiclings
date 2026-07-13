@@ -1,5 +1,5 @@
 import { createBrowserRouter } from 'react-router-dom'
-import { AppShell } from '../../components/templates/AppShell'
+import { AppShell } from '../../components/templates/AppShell/AppShell'
 import { HomePage } from '../routes/HomePage'
 import { TracksPage } from '../routes/TracksPage'
 import { TrackDetailPage } from '../routes/TrackDetailPage'
