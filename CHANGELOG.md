@@ -9,6 +9,31 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 
 ### Added
 
+- Mini-game runtime contract in `src/games/runtime`: a `LevelDefinition`-driven
+  reducer (`runtimeReducer`) modeling the Hook → Predict → Simulate → React →
+  Explain → Transfer rhythm as explicit stages, pause/restart, attempt
+  tracking, a pure `calculateScore` scoring function, a `GameResult` event
+  shape, an accessibility-mode flag (reduced motion + sound-off) synced from
+  `prefers-reduced-motion`, and a renderer-agnostic `GameDefinition`/mount
+  boundary (DOM/SVG/canvas).
+- `GameHost` component that mounts a game via the runtime contract, renders
+  pause/restart controls and a stage-progress indicator, and manages focus
+  across stage transitions for keyboard and screen-reader users.
+- `usePressable` input abstraction (`src/games/runtime/input.ts`) so mini-games
+  get consistent keyboard/touch/click activation without reimplementing it.
+- Shared `ResultScreen` component and `/play/:lessonSlug/result` wiring:
+  what happened, the named concept, a transfer question, score/correctness/
+  attempts, and mastery/XP/streak placeholders (real wiring lands in a later
+  feature). Storybook stories cover the success and mistake states.
+- A minimal reference/demo mini-game (`src/games/_reference-game`) proving the
+  runtime contract end-to-end via a signal-prediction mechanic — explicitly
+  marked as a non-shippable runtime fixture, reachable at
+  `/play/runtime-fixture`.
+- `LevelDefinition` Zod schema (`src/learning/schemas/level.ts`) per the
+  project's core data models.
+- `/play/:lessonSlug` now resolves lessons from the catalog and mounts the
+  runtime fixture game for the demo lesson; real catalog lessons without a
+  built game show an honest "not built yet" placeholder.
 - Typed, Zod-validated learning catalog in `src/learning`: `Track` and `Lesson`
   schemas, seed data for the Frontend, System Design, and Agentic Coding
   tracks, and a `deriveLessonState` utility for locked/available/completed
