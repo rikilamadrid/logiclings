@@ -32,3 +32,7 @@ for (const lesson of lessons) {
 export function getLessonsForTrack(trackId: string): Lesson[] {
   return lessons.filter((lesson) => lesson.trackId === trackId)
 }
+
+export function getLessonBySlug(slug: string): Lesson | undefined {
+  return lessons.find((lesson) => lesson.slug === slug)
+}

@@ -1,0 +1,41 @@
+.account {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2xs, var(--space-xs));
+  margin: var(--space-lg) 0;
+  padding: var(--space-lg);
+  border: var(--border-width-sm) solid var(--color-border);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+}
+
+.actions {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+  align-items: flex-start;
+  margin-top: var(--space-lg);
+}
+
+.primaryLink {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: var(--touch-target-comfortable);
+  padding: 0 var(--space-xl);
+  border-radius: var(--radius-md);
+  background: var(--color-accent);
+  color: var(--color-text-on-accent);
+  font-family: var(--font-family-base);
+  font-weight: var(--font-weight-medium);
+  text-decoration: none;
+}
+
+.primaryLink:hover {
+  background: var(--color-accent-strong);
+}
+
+.primaryLink:focus-visible {
+  outline: var(--border-width-md) solid var(--color-accent);
+  outline-offset: 2px;
+}

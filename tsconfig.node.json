@@ -24,8 +24,10 @@
   },
   "include": [
     "vite.config.ts",
+    "vite/**/*.ts",
     "vitest.config.ts",
     "playwright.config.ts",
+    "prisma.config.ts",
     ".storybook/main.ts"
   ]
 }

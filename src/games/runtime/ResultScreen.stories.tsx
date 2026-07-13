@@ -36,8 +36,10 @@ const baseResult: GameResult = {
   totalRounds: 2,
   attemptCount: 1,
   durationMs: 42000,
+  startedAt: new Date(Date.now() - 42000).toISOString(),
   completedAt: new Date().toISOString(),
   mistakeCodes: [],
+  clientAttemptId: 'story-attempt-1',
 }
 
 export const Success: Story = {

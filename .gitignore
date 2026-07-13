@@ -34,3 +34,11 @@ coverage
 
 # Generated lesson docs
 docs/
+
+# Environment
+.env
+.env.*
+!.env.example
+
+# Prisma generated client
+generated/
