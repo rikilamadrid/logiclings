@@ -40,8 +40,15 @@ export interface GameResult extends ScoreResult {
   outcome: 'completed' | 'abandoned'
   attemptCount: number
   durationMs: number
+  startedAt: string
   completedAt: string
   mistakeCodes: string[]
+  /**
+   * Generated once, when the attempt finishes. Carried with the result so that
+   * retrying the completion mutation (network blip, remount, reload) replays
+   * the *same* attempt rather than recording a new one.
+   */
+  clientAttemptId: string
 }
 
 export interface RuntimeState {

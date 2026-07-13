@@ -1,10 +1,17 @@
-import { PlaceholderPage } from '../../components/atoms/PlaceholderPage'
+import { Container } from '../../components/atoms/Container/Container'
+import { Heading } from '../../components/atoms/Heading/Heading'
+import { Text } from '../../components/atoms/Text/Text'
+import { SignInForm } from '../../features/auth/SignInForm'
 
 export function SignInPage() {
   return (
-    <PlaceholderPage
-      title="Sign in"
-      description="The sign-in form will render here."
-    />
+    <Container>
+      <Heading level={1}>Sign in</Heading>
+      <Text tone="muted">
+        Sign in to save your progress and pick up where you left off.
+      </Text>
+
+      <SignInForm />
+    </Container>
   )
 }

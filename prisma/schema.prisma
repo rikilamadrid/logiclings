@@ -1,0 +1,149 @@
+// Logiclings data model.
+//
+// Auth models (User, Session, Account, Verification) follow the Better Auth
+// core schema and are managed through the Better Auth Prisma adapter.
+// Progress models (UserProgress, Attempt) follow the Core Data Models in
+// context/project-overview.md.
+
+datasource db {
+  provider = "postgresql"
+}
+
+generator client {
+  provider = "prisma-client"
+  output   = "../generated"
+}
+
+/// Mastery a learner has reached on a lesson.
+enum MasteryState {
+  not_started
+  discovering
+  applied
+  mastered
+}
+
+/// How a single play attempt ended.
+enum AttemptOutcome {
+  completed
+  failed
+  abandoned
+}
+
+// --- Better Auth core models ---
+
+model User {
+  id            String   @id @default(cuid())
+  name          String
+  email         String   @unique
+  emailVerified Boolean  @default(false)
+  image         String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  sessions Session[]
+  accounts Account[]
+  progress UserProgress[]
+  attempts Attempt[]
+
+  @@map("user")
+}
+
+model Session {
+  id        String   @id @default(cuid())
+  expiresAt DateTime
+  token     String   @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  ipAddress String?
+  userAgent String?
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("session")
+}
+
+model Account {
+  id                    String    @id @default(cuid())
+  accountId             String
+  providerId            String
+  accessToken           String?
+  refreshToken          String?
+  idToken               String?
+  accessTokenExpiresAt  DateTime?
+  refreshTokenExpiresAt DateTime?
+  scope                 String?
+  password              String?
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("account")
+}
+
+model Verification {
+  id         String   @id @default(cuid())
+  identifier String
+  value      String
+  expiresAt  DateTime
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@index([identifier])
+  @@map("verification")
+}
+
+// --- Progress models ---
+
+/// One row per (user, lesson). Records the learner's current mastery and the
+/// lesson version that mastery was earned against.
+model UserProgress {
+  id            String       @id @default(cuid())
+  userId        String
+  lessonId      String
+  masteryState  MasteryState @default(not_started)
+  bestScore     Int?
+  attempts      Int          @default(0)
+  completedAt   DateTime?
+  lastPlayedAt  DateTime?
+  lessonVersion Int          @default(1)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, lessonId])
+  @@index([userId])
+  @@map("user_progress")
+}
+
+/// One row per play attempt. `clientAttemptId` is generated on the client and
+/// makes the completion mutation idempotent: replaying the same attempt is a
+/// no-op rather than a double count.
+model Attempt {
+  id              String         @id @default(cuid())
+  userId          String
+  lessonId        String
+  levelId         String
+  startedAt       DateTime
+  completedAt     DateTime?
+  outcome         AttemptOutcome
+  score           Int?
+  mistakeCodes    String[]
+  hintCount       Int            @default(0)
+  durationMs      Int?
+  clientAttemptId String
+
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, clientAttemptId])
+  @@index([userId, lessonId])
+  @@map("attempt")
+}

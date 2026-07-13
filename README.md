@@ -14,6 +14,10 @@ npm install
 npm run dev             # Vite dev server
 ```
 
+`npm run dev` serves the app only. The catalog and the mini-games work without
+a backend; signing in and saving progress need the API and a database — see
+[Environment and database](#environment-and-database).
+
 Other useful commands:
 
 ```bash
@@ -25,6 +29,45 @@ npm run test              # Vitest
 npm run test:e2e           # Playwright
 npm run storybook           # Storybook dev server
 npm run build-storybook       # Storybook static build
+```
+
+## Environment and database
+
+Auth and progress persistence run on Vercel Functions (`api/`) backed by
+PostgreSQL through Prisma, with sessions from Better Auth.
+
+Copy `.env.example` to `.env` and fill it in:
+
+| Variable             | Purpose                                                     |
+| -------------------- | ----------------------------------------------------------- |
+| `DATABASE_URL`       | PostgreSQL connection string (Prisma migrations + runtime). |
+| `BETTER_AUTH_SECRET` | Session signing secret — `openssl rand -base64 32`.         |
+| `BETTER_AUTH_URL`    | Origin auth cookies/callbacks are issued against.           |
+
+Then create the schema and run the app with its API:
+
+```bash
+npm run db:deploy       # apply migrations (prisma migrate deploy)
+npm run dev:api         # vercel dev — serves the app *and* /api
+```
+
+Database commands:
+
+```bash
+npm run db:generate     # regenerate the Prisma client (also runs on postinstall)
+npm run db:migrate      # create + apply a migration in development
+npm run db:studio       # browse the data
+```
+
+The Prisma client is generated into `generated/` (gitignored) on `postinstall`,
+so a fresh clone and CI typecheck without a database. Anything that actually
+talks to Postgres — `db:migrate`, `db:deploy`, `db:studio`, the running API —
+needs a real `DATABASE_URL`.
+
+The auth/progress end-to-end spec is skipped unless the API is running:
+
+```bash
+E2E_WITH_API=1 npm run test:e2e
 ```
 
 ## Project context

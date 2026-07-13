@@ -5,14 +5,12 @@ import { Text } from '../../components/atoms/Text/Text'
 import { LessonListItem } from '../../components/molecules/LessonListItem/LessonListItem'
 import { PlaceholderPage } from '../../components/atoms/PlaceholderPage'
 import { deriveLessonState } from '../../learning/deriveLessonState'
-import type { MasteryState } from '../../learning/schemas/lesson'
 import {
   useLessonsByTrackQuery,
   useTrackQuery,
 } from '../../learning/queries'
+import { useMasteryByLessonId } from '../../features/progress/queries'
 import styles from './TrackDetailPage.module.css'
-
-const noMastery = new Map<string, MasteryState>()
 
 export function TrackDetailPage() {
   const { trackSlug } = useParams<{ trackSlug: string }>()
@@ -20,7 +18,11 @@ export function TrackDetailPage() {
   const { data: lessons, isLoading: areLessonsLoading } =
     useLessonsByTrackQuery(trackSlug)
 
-  if (isTrackLoading || areLessonsLoading) {
+  // Empty for signed-out learners, so every lesson falls back to `not_started`.
+  const { masteryByLessonId, isLoading: isProgressLoading } =
+    useMasteryByLessonId()
+
+  if (isTrackLoading || areLessonsLoading || isProgressLoading) {
     return <Text tone="muted">Loading track…</Text>
   }
 
@@ -43,7 +45,7 @@ export function TrackDetailPage() {
           <li key={lesson.id}>
             <LessonListItem
               lesson={lesson}
-              state={deriveLessonState(lesson, noMastery)}
+              state={deriveLessonState(lesson, masteryByLessonId)}
             />
           </li>
         ))}

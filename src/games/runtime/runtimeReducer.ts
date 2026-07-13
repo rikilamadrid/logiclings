@@ -1,4 +1,5 @@
 import type { LevelDefinition } from '../../learning/schemas/level'
+import { createAttemptId } from './attemptId'
 import { calculateScore } from './scoring'
 import type {
   AccessibilityModeState,
@@ -35,6 +36,8 @@ function buildResult(
     .filter((round) => !round.correct)
     .map((round) => `${round.kind}-mismatch`)
 
+  const completedAt = Date.now()
+
   return {
     lessonSlug,
     levelMode: state.level.mode,
@@ -43,9 +46,11 @@ function buildResult(
     correctCount,
     totalRounds,
     attemptCount: state.attemptCount,
-    durationMs: state.startedAt ? Date.now() - state.startedAt : 0,
-    completedAt: new Date().toISOString(),
+    durationMs: state.startedAt ? completedAt - state.startedAt : 0,
+    startedAt: new Date(state.startedAt ?? completedAt).toISOString(),
+    completedAt: new Date(completedAt).toISOString(),
     mistakeCodes,
+    clientAttemptId: createAttemptId(),
   }
 }
 

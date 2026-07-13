@@ -1,3 +1,4 @@
+import { useEffect, useMemo } from 'react'
 import { useNavigate, useParams, useLocation } from 'react-router-dom'
 import { Container } from '../../components/atoms/Container/Container'
 import { PlaceholderPage } from '../../components/atoms/PlaceholderPage'
@@ -9,6 +10,12 @@ import {
 } from '../../games/_reference-game/fixture'
 import { getEventBubblingLevel } from '../../games/event-bubbling-bubbles/levels'
 import { getEventBubblingTransferQuestion } from '../../games/event-bubbling-bubbles/reflection'
+import { getLessonBySlug } from '../../learning/catalog/lessons'
+import { SaveProgressPanel } from '../../features/progress/SaveProgressPanel'
+import {
+  loadRecentResult,
+  saveRecentResult,
+} from '../../features/progress/recentResult'
 
 const EVENT_BUBBLING_LESSON_SLUG = 'event-bubbling-bubbles'
 
@@ -16,7 +23,21 @@ export function PlayResultPage() {
   const { lessonSlug } = useParams<{ lessonSlug: string }>()
   const navigate = useNavigate()
   const location = useLocation()
-  const result = location.state as GameResult | null
+
+  const stateResult = location.state as GameResult | null
+
+  // Router state does not survive a reload or the sign-in round trip, so keep a
+  // copy the moment the result arrives.
+  useEffect(() => {
+    if (stateResult) {
+      saveRecentResult(stateResult)
+    }
+  }, [stateResult])
+
+  const result = useMemo(
+    () => stateResult ?? (lessonSlug ? loadRecentResult(lessonSlug) : null),
+    [stateResult, lessonSlug],
+  )
 
   if (!result) {
     return (
@@ -31,6 +52,7 @@ export function PlayResultPage() {
 
   if (lessonSlug === EVENT_BUBBLING_LESSON_SLUG) {
     const level = getEventBubblingLevel(result.levelMode)
+    const lesson = getLessonBySlug(lessonSlug)
 
     return (
       <Container padding="none">
@@ -41,6 +63,10 @@ export function PlayResultPage() {
           onRetry={() => navigate(`/play/${lessonSlug}?mode=${result.levelMode}`)}
           onContinue={() => navigate('/')}
         />
+
+        {lesson ? (
+          <SaveProgressPanel result={result} lesson={lesson} level={level} />
+        ) : null}
       </Container>
     )
   }
@@ -56,6 +82,8 @@ export function PlayResultPage() {
     )
   }
 
+  // The reference fixture is a runtime demo, not a catalog lesson — there is no
+  // progress to save against it.
   const level = getReferenceFixtureLevel(result.levelMode)
 
   return (

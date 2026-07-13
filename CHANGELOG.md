@@ -9,6 +9,51 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 
 ### Added
 
+- **Authentication and persistent progress** — the app's first backend. A
+  learner can sign up, sign in, play Event Bubbling Bubbles, and find their
+  completion still there after a reload or on another device.
+  - Prisma schema on PostgreSQL for the Better Auth core models (`User`,
+    `Session`, `Account`, `Verification`) plus `UserProgress` and `Attempt`,
+    per the Core Data Models in `context/project-overview.md`, with an initial
+    migration.
+  - Better Auth with the Prisma adapter, email/password sign-in, mounted at
+    `/api/auth/*`. Magic links and social providers stay out of scope — both
+    need delivery/provider infrastructure that is not provisioned.
+  - Vercel Functions API (`api/` + `src/server`): a session-aware progress read
+    (`GET /api/progress`) and a completion mutation
+    (`POST /api/progress/complete`) that is idempotent on `clientAttemptId`, so
+    a retry after a network blip cannot double-count an attempt.
+  - Strict server layering — route handler → session check → Zod validation →
+    domain service → Prisma repository. Handlers never touch Prisma, and the
+    owner of every read and write comes from the verified session, never from
+    the request body.
+  - Real `/auth/sign-in` and `/auth/sign-up` routes replacing the feature-03
+    placeholders: mobile-first, keyboard accessible, with field-level validation
+    messaging and an accessible `TextField` molecule.
+  - Play is never gated behind auth. A signed-out learner is prompted to sign in
+    at the point progress would be saved, and the finished attempt is preserved
+    across the sign-in round trip (and a reload) so nothing is lost.
+  - Track/Lesson catalog views now reflect the signed-in learner's real
+    `UserProgress.masteryState` instead of the static `not_started` placeholder.
+  - Mastery rules are pure and independently tested: an attempt passes only when
+    it is completed with every round correct, mastery never regresses, and a
+    lesson's completion date is stamped once rather than moving on every replay.
+  - Tests cover the mastery/attempt logic, the progress service (including
+    idempotent replays and per-user scoping), and the API handlers (a caller
+    with no session is rejected; a caller cannot read or write another learner's
+    progress, including by naming one in the request body). A Playwright spec
+    covers sign-up → play → reload → persisted, skipped unless `E2E_WITH_API=1`.
+  - Integration tests against a real PostgreSQL
+    (`src/server/db/progressRepository.integration.test.ts`, opt-in via
+    `INTEGRATION_DB=1`) cover replay handling and concurrent duplicate writes.
+    The in-memory fake used by the unit tests detects duplicates with a set
+    lookup and so cannot reproduce Postgres transaction semantics — database
+    behavior has to be proved against a database.
+  - `npm run dev` now also serves `/api/*`, via a Vite dev middleware
+    (`vite/apiDevServer.ts`) that mounts the same handlers the Vercel Functions
+    call. Local development needs no Vercel CLI or account; production still
+    runs the real functions in `api/`.
+
 - **Event Bubbling Bubbles**, the first shippable mini-game
   (`src/games/event-bubbling-bubbles`), teaching DOM event bubbling/
   propagation through a nested-bubble metaphor: the learner selects which
@@ -102,6 +147,11 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 
 ### Changed
 
+- `GameResult` now carries `startedAt` and a `clientAttemptId` generated when an
+  attempt finishes, so every mini-game gets an idempotency key for the completion
+  mutation without each game inventing one.
+- The Profile page carries account state (sign in / sign out); the full
+  progress/streak/achievement profile remains feature 08.
 - Rewrote `CLAUDE.md` and `context/coding-standards.md` to reflect the actual
   Logiclings stack (Vite, React Router, CSS Modules/custom properties, TanStack
   Query, Zod, Better Auth, Prisma) instead of the generic starter-kit defaults.

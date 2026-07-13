@@ -1,0 +1,36 @@
+.panel {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-sm);
+  margin-top: var(--space-lg);
+  padding: var(--space-lg);
+  border: var(--border-width-sm) solid var(--color-border);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface-muted);
+}
+
+/* Styled as a button: it is the primary action for a signed-out learner. */
+.signInLink {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: var(--touch-target-comfortable);
+  padding: 0 var(--space-xl);
+  border-radius: var(--radius-md);
+  background: var(--color-accent);
+  color: var(--color-text-on-accent);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-medium);
+  text-decoration: none;
+}
+
+.signInLink:hover {
+  background: var(--color-accent-strong);
+}
+
+.signInLink:focus-visible {
+  outline: var(--border-width-md) solid var(--color-accent);
+  outline-offset: 2px;
+}
