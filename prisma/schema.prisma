@@ -44,6 +44,7 @@ model User {
   accounts Account[]
   progress UserProgress[]
   attempts Attempt[]
+  streak   Streak?
 
   @@map("user")
 }
@@ -146,4 +147,24 @@ model Attempt {
   @@unique([userId, clientAttemptId])
   @@index([userId, lessonId])
   @@map("attempt")
+}
+
+/// One row per user. `lastQualifiedDate` is a calendar date (`YYYY-MM-DD`) in
+/// `timezone`, not an instant — streak math compares local calendar days, so
+/// storing it pre-resolved to the user's timezone keeps DST transitions out of
+/// every read.
+model Streak {
+  id                String   @id @default(cuid())
+  userId            String   @unique
+  currentDays       Int      @default(0)
+  longestDays       Int      @default(0)
+  lastQualifiedDate String?
+  timezone          String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("streak")
 }

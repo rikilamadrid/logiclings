@@ -1,9 +1,10 @@
-import { useEffect, useMemo, useRef } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { Button } from '../../components/atoms/Button/Button'
 import { Text } from '../../components/atoms/Text/Text'
 import { signInHref } from '../auth/useAuthRedirect'
 import { useSession } from '../../lib/auth/authClient'
+import { audioService } from '../../lib/audio/audioService'
 import type { CompleteLessonRequest } from '../../lib/api/contracts'
 import type { GameResult } from '../../games/runtime/types'
 import type { Lesson } from '../../learning/schemas/lesson'
@@ -54,6 +55,7 @@ export function SaveProgressPanel({
       durationMs: result.durationMs,
       startedAt: result.startedAt,
       completedAt: result.completedAt,
+      timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
     }),
     [result, lesson, level],
   )
@@ -70,6 +72,21 @@ export function SaveProgressPanel({
     savedAttemptId.current = request.clientAttemptId
     mutate(request)
   }, [isSignedIn, mutate, request])
+
+  // Plays the streak cue once per qualifying save, and enters the CSS
+  // transition on the next frame so it actually transitions in rather than
+  // rendering already-visible.
+  const [streakVisible, setStreakVisible] = useState(false)
+  const streak = mutation.data?.streak
+  const streakQualified = mutation.data?.streakQualified ?? false
+
+  useEffect(() => {
+    if (!streakQualified) return
+
+    audioService.play('streak')
+    const frame = requestAnimationFrame(() => setStreakVisible(true))
+    return () => cancelAnimationFrame(frame)
+  }, [streakQualified])
 
   if (isSessionPending) {
     return (
@@ -126,6 +143,17 @@ export function SaveProgressPanel({
     return (
       <div className={styles.panel} aria-live="polite">
         <Text weight="medium">Progress saved</Text>
+        {streak && streakQualified && (
+          <Text
+            tone="muted"
+            size="sm"
+            className={`${styles.streak} ${streakVisible ? styles.streakIn : ''}`}
+          >
+            {streak.currentDays === 1
+              ? "You're on a 1-day streak. Keep it up!"
+              : `${streak.currentDays}-day streak! Keep it up.`}
+          </Text>
+        )}
       </div>
     )
   }

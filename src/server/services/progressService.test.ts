@@ -4,7 +4,9 @@ import {
   createInMemoryProgressRepository,
   type InMemoryProgressRepository,
 } from '../testing/inMemoryProgressRepository'
+import { createInMemoryStreakRepository } from '../testing/inMemoryStreakRepository'
 import { createProgressService, type ProgressService } from './progressService'
+import { createStreakService } from './streakService'
 
 const USER = 'user-1'
 const OTHER_USER = 'user-2'
@@ -12,6 +14,7 @@ const LESSON = 'lesson-event-bubbling'
 
 const STARTED_AT = '2026-07-13T10:00:00.000Z'
 const COMPLETED_AT = '2026-07-13T10:04:00.000Z'
+const TIMEZONE = 'America/New_York'
 
 function completionRequest(
   overrides: Partial<CompleteLessonRequest> = {},
@@ -31,6 +34,7 @@ function completionRequest(
     durationMs: 240_000,
     startedAt: STARTED_AT,
     completedAt: COMPLETED_AT,
+    timezone: TIMEZONE,
     ...overrides,
   }
 }
@@ -41,7 +45,8 @@ describe('progressService', () => {
 
   beforeEach(() => {
     repository = createInMemoryProgressRepository()
-    service = createProgressService(repository)
+    const streakService = createStreakService(createInMemoryStreakRepository())
+    service = createProgressService(repository, streakService)
   })
 
   it('creates progress on a first passing attempt', async () => {
@@ -194,6 +199,38 @@ describe('progressService', () => {
 
       expect(mine).toHaveLength(1)
       expect(mine[0].lessonId).toBe(LESSON)
+    })
+  })
+
+  describe('streak', () => {
+    it('qualifies the streak on a genuinely new completed attempt', async () => {
+      const { streak, streakQualified } = await service.completeLesson(
+        USER,
+        completionRequest(),
+      )
+
+      expect(streakQualified).toBe(true)
+      expect(streak.currentDays).toBe(1)
+      expect(streak.longestDays).toBe(1)
+    })
+
+    it('does not qualify the streak again on a replay', async () => {
+      const request = completionRequest()
+      await service.completeLesson(USER, request)
+      const replay = await service.completeLesson(USER, request)
+
+      expect(replay.streakQualified).toBe(false)
+      expect(replay.streak.currentDays).toBe(1)
+    })
+
+    it('does not qualify the streak for a failed attempt', async () => {
+      const { streak, streakQualified } = await service.completeLesson(
+        USER,
+        completionRequest({ outcome: 'failed', completedAt: null }),
+      )
+
+      expect(streakQualified).toBe(false)
+      expect(streak.currentDays).toBe(0)
     })
   })
 })

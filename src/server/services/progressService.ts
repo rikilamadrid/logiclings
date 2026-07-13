@@ -7,6 +7,7 @@ import type {
   ProgressRepository,
   ProgressSnapshot,
 } from '../db/progressRepository'
+import type { StreakService } from './streakService'
 import { isCompletedMastery, nextBestScore, nextMasteryState } from './mastery'
 
 /**
@@ -36,13 +37,14 @@ export interface ProgressService {
 
 export function createProgressService(
   repository: ProgressRepository,
+  streakService: StreakService,
 ): ProgressService {
   return {
     listProgress(userId) {
       return repository.listProgress(userId)
     },
 
-    completeLesson(userId, request) {
+    async completeLesson(userId, request) {
       const playedAt = request.completedAt
         ? new Date(request.completedAt)
         : new Date(request.startedAt)
@@ -77,7 +79,7 @@ export function createProgressService(
         }
       }
 
-      return repository.recordCompletion(
+      const result = await repository.recordCompletion(
         {
           userId,
           lessonId: request.lessonId,
@@ -96,6 +98,21 @@ export function createProgressService(
         },
         applyAttempt,
       )
+
+      // A finished attempt is a qualifying event, once per day per timezone.
+      // Replays of an already-recorded attempt do not qualify a second time.
+      if (result.attemptRecorded && request.outcome === 'completed') {
+        const { streak, streakQualified } =
+          await streakService.recordQualifyingEvent(
+            userId,
+            playedAt,
+            request.timezone,
+          )
+        return { ...result, streak, streakQualified }
+      }
+
+      const streak = await streakService.getStreak(userId)
+      return { ...result, streak, streakQualified: false }
     },
   }
 }

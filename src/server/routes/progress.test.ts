@@ -6,7 +6,9 @@ import type {
   ProgressListResponse,
 } from '../../lib/api/contracts'
 import { createProgressService } from '../services/progressService'
+import { createStreakService } from '../services/streakService'
 import { createInMemoryProgressRepository } from '../testing/inMemoryProgressRepository'
+import { createInMemoryStreakRepository } from '../testing/inMemoryStreakRepository'
 import { createProgressRoutes, type ProgressRoutes } from './progress'
 
 /** `Response.json()` is `unknown`; tests assert against the documented shape. */
@@ -36,6 +38,7 @@ function completionBody(
     durationMs: 1000,
     startedAt: '2026-07-13T10:00:00.000Z',
     completedAt: '2026-07-13T10:04:00.000Z',
+    timezone: 'America/New_York',
     ...overrides,
   }
 }
@@ -61,9 +64,10 @@ describe('progress routes', () => {
   beforeEach(() => {
     repository = createInMemoryProgressRepository()
     currentUserId = USER
+    const streakService = createStreakService(createInMemoryStreakRepository())
     routes = createProgressRoutes({
       getUserId: async () => currentUserId,
-      service: createProgressService(repository),
+      service: createProgressService(repository, streakService),
     })
   })
 

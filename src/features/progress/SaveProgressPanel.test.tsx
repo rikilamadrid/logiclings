@@ -10,6 +10,7 @@ import { SaveProgressPanel } from './SaveProgressPanel'
 
 const useSession = vi.fn()
 const completeLesson = vi.fn()
+const audioPlay = vi.fn()
 
 vi.mock('../../lib/auth/authClient', () => ({
   useSession: () => useSession(),
@@ -23,6 +24,10 @@ vi.mock('../../lib/api/progressClient', async (importOriginal) => {
     completeLesson: (...args: unknown[]) => completeLesson(...args),
   }
 })
+
+vi.mock('../../lib/audio/audioService', () => ({
+  audioService: { play: (...args: unknown[]) => audioPlay(...args) },
+}))
 
 const lesson: Lesson = {
   id: 'lesson-1',
@@ -87,6 +92,7 @@ describe('SaveProgressPanel', () => {
   beforeEach(() => {
     useSession.mockReset()
     completeLesson.mockReset()
+    audioPlay.mockReset()
     completeLesson.mockResolvedValue({
       progress: {
         lessonId: 'lesson-1',
@@ -98,6 +104,13 @@ describe('SaveProgressPanel', () => {
         lessonVersion: 3,
       },
       attemptRecorded: true,
+      streak: {
+        currentDays: 1,
+        longestDays: 1,
+        lastQualifiedDate: '2026-07-13',
+        timezone: 'America/New_York',
+      },
+      streakQualified: false,
     })
   })
 
@@ -146,8 +159,48 @@ describe('SaveProgressPanel', () => {
         startedAt: '2026-07-13T10:00:00.000Z',
         completedAt: '2026-07-13T10:00:41.000Z',
       })
+      expect(completeLesson.mock.calls[0][0]).toHaveProperty('timezone')
 
       expect(await screen.findByText('Progress saved')).toBeInTheDocument()
+    })
+
+    it('plays the streak cue and shows the streak message on a qualifying day', async () => {
+      signedIn()
+      completeLesson.mockResolvedValue({
+        progress: {
+          lessonId: 'lesson-1',
+          masteryState: 'applied',
+          bestScore: 100,
+          attempts: 1,
+          completedAt: '2026-07-13T10:00:41.000Z',
+          lastPlayedAt: '2026-07-13T10:00:41.000Z',
+          lessonVersion: 3,
+        },
+        attemptRecorded: true,
+        streak: {
+          currentDays: 3,
+          longestDays: 5,
+          lastQualifiedDate: '2026-07-13',
+          timezone: 'America/New_York',
+        },
+        streakQualified: true,
+      })
+
+      renderPanel()
+
+      expect(
+        await screen.findByText('3-day streak! Keep it up.'),
+      ).toBeInTheDocument()
+      expect(audioPlay).toHaveBeenCalledWith('streak')
+    })
+
+    it('does not show a streak message when the day already qualified', async () => {
+      signedIn()
+      renderPanel()
+
+      await screen.findByText('Progress saved')
+      expect(screen.queryByText(/day streak/)).not.toBeInTheDocument()
+      expect(audioPlay).not.toHaveBeenCalled()
     })
 
     it('saves once even across re-renders', async () => {

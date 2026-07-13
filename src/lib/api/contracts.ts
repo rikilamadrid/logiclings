@@ -33,6 +33,42 @@ export const progressListResponseSchema = z.object({
 
 export type ProgressListResponse = z.infer<typeof progressListResponseSchema>
 
+/** True when `value` is a timezone name the runtime's `Intl` recognizes. */
+export function isValidTimeZone(value: string): boolean {
+  try {
+    new Intl.DateTimeFormat(undefined, { timeZone: value })
+    return true
+  } catch {
+    return false
+  }
+}
+
+/** IANA timezone name, e.g. `America/New_York`. */
+export const timeZoneSchema = z
+  .string()
+  .min(1)
+  .max(64)
+  .refine(isValidTimeZone, { message: 'Must be a valid IANA timezone name.' })
+
+/** A learner's streak, as returned by the API. */
+export const streakRecordSchema = z.object({
+  currentDays: z.number().int().nonnegative(),
+  longestDays: z.number().int().nonnegative(),
+  lastQualifiedDate: z
+    .string()
+    .regex(/^\d{4}-\d{2}-\d{2}$/)
+    .nullable(),
+  timezone: z.string().min(1),
+})
+
+export type StreakRecord = z.infer<typeof streakRecordSchema>
+
+export const streakResponseSchema = z.object({
+  streak: streakRecordSchema,
+})
+
+export type StreakResponse = z.infer<typeof streakResponseSchema>
+
 /**
  * Body of the completion mutation. `clientAttemptId` is the idempotency key:
  * the server records at most one attempt per (user, clientAttemptId).
@@ -42,6 +78,10 @@ export type ProgressListResponse = z.infer<typeof progressListResponseSchema>
  *
  * Scores and round counts are client-reported for the MVP; server-authoritative
  * scoring would need the level definitions on the server and is out of scope.
+ *
+ * `timezone` is the browser's current IANA timezone (captured fresh on every
+ * completion rather than stored once at sign-up, so a traveling learner's
+ * streak always qualifies against where they actually are).
  */
 export const completeLessonRequestSchema = z.object({
   clientAttemptId: z.string().min(1).max(128),
@@ -58,6 +98,7 @@ export const completeLessonRequestSchema = z.object({
   durationMs: z.number().int().nonnegative().nullable(),
   startedAt: z.iso.datetime(),
   completedAt: z.iso.datetime().nullable(),
+  timezone: timeZoneSchema,
 })
 
 export type CompleteLessonRequest = z.infer<typeof completeLessonRequestSchema>
@@ -69,6 +110,9 @@ export const completeLessonResponseSchema = z.object({
    * hit a replay and nothing was double-counted.
    */
   attemptRecorded: z.boolean(),
+  streak: streakRecordSchema,
+  /** True when this completion moved the streak forward to a new day. */
+  streakQualified: z.boolean(),
 })
 
 export type CompleteLessonResponse = z.infer<typeof completeLessonResponseSchema>

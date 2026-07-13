@@ -3,12 +3,30 @@ import { Card } from '../../components/molecules/Card/Card'
 import { Container } from '../../components/atoms/Container/Container'
 import { Heading } from '../../components/atoms/Heading/Heading'
 import { Text } from '../../components/atoms/Text/Text'
+import { useStreakQuery } from '../../features/streaks/queries'
 import { useLessonsQuery, useTracksQuery } from '../../learning/queries'
 import styles from './HomePage.module.css'
+
+function streakMessage(
+  isSignedIn: boolean,
+  isLoading: boolean,
+  currentDays: number | undefined,
+): string {
+  if (!isSignedIn) return 'Sign in to start tracking your streak.'
+  if (isLoading) return 'Loading your streak…'
+  if (!currentDays) return '0-day streak. Complete a lesson to start one.'
+  if (currentDays === 1) return "1-day streak. You're just getting started!"
+  return `${currentDays}-day streak. Keep it going!`
+}
 
 export function HomePage() {
   const { data: tracks } = useTracksQuery()
   const { data: lessons } = useLessonsQuery()
+  const {
+    data: streak,
+    isLoading: isStreakLoading,
+    isSignedIn: isStreakSignedIn,
+  } = useStreakQuery()
 
   const sortedTracks = [...(tracks ?? [])].sort((a, b) => a.order - b.order)
   const continueLesson = lessons?.find(
@@ -62,7 +80,11 @@ export function HomePage() {
         <Card>
           <Heading level={3}>Streak</Heading>
           <Text tone="muted" size="sm">
-            0-day streak. Complete a lesson to start one.
+            {streakMessage(
+              isStreakSignedIn,
+              isStreakLoading,
+              streak?.currentDays,
+            )}
           </Text>
         </Card>
 

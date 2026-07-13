@@ -1,9 +1,5 @@
 import type { MasteryState } from '../../learning/schemas/lesson'
-import type {
-  AttemptOutcome,
-  CompleteLessonResponse,
-  ProgressRecord,
-} from '../../lib/api/contracts'
+import type { AttemptOutcome, ProgressRecord } from '../../lib/api/contracts'
 import { prisma } from './client'
 
 /**
@@ -47,12 +43,21 @@ export type ReduceProgress = (
   current: ProgressSnapshot | null,
 ) => ProgressSnapshot
 
+export interface RecordCompletionResult {
+  progress: ProgressRecord
+  /**
+   * False when this `clientAttemptId` had already been recorded — the caller
+   * hit a replay and nothing was double-counted.
+   */
+  attemptRecorded: boolean
+}
+
 export interface ProgressRepository {
   listProgress(userId: string): Promise<ProgressRecord[]>
   recordCompletion(
     input: RecordCompletionInput,
     reduceProgress: ReduceProgress,
-  ): Promise<CompleteLessonResponse>
+  ): Promise<RecordCompletionResult>
 }
 
 function toProgressRecord(row: {

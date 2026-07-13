@@ -34,3 +34,21 @@
   outline: var(--border-width-md) solid var(--color-accent);
   outline-offset: 2px;
 }
+
+.streak {
+  opacity: 0;
+  transform: translateY(4px);
+  transition: opacity 0.3s ease-out, transform 0.3s ease-out;
+}
+
+.streak.streakIn {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .streak {
+    transition: opacity 0.01ms;
+    transform: none;
+  }
+}
