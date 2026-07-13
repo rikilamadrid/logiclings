@@ -58,6 +58,65 @@ what is active now, and summarize shipped work here after it lands.
   recipes, sound/haptics, or dark theme work yet — those remain scoped to
   later features.
 
+### 2026-07-12 — Feature 03: App Shell, Navigation, and Track/Lesson Catalog
+
+- Added a typed, Zod-validated learning catalog (`src/learning`): `Track` and
+  `Lesson` schemas, seed data for the Frontend, System Design, and Agentic
+  Coding tracks, and a `deriveLessonState` utility deriving locked/available/
+  completed lesson states from `prerequisiteLessonIds`.
+- Added TanStack Query hooks (`src/learning/queries.ts`) for reading catalog
+  data, keeping the data-fetching seam in place for the later API-backed version
+  (which feature 06 went on to use).
+- Built the real app shell: a `NavBar` organism (mobile bottom tab bar, desktop
+  top bar) and an `ErrorBoundary`, wired into a refactored `AppShell`, plus
+  `TrackCard` and `LessonListItem` molecules with Storybook stories.
+- Home (`/`), Tracks (`/tracks`), and Track Detail (`/tracks/:trackSlug`) render
+  real catalog-derived content instead of placeholders.
+- Profile and Settings remained navigable skeleton pages for later features.
+
+### 2026-07-13 — Feature 04: Mini-Game Runtime Contract
+
+- Added the shared mini-game runtime (`src/games/runtime`): a reducer-driven
+  lifecycle (idle → predicting → simulating → reacting → explaining → transfer →
+  complete), pause/restart, attempt tracking, a pure scoring function, a
+  `GameResult` event shape, reduced-motion/sound-off accessibility state synced
+  from `prefers-reduced-motion`, and a renderer-agnostic `GameDefinition`/mount
+  boundary (DOM/SVG/canvas).
+- Built `GameHost` to mount games through the contract with pause/restart
+  controls, a stage-progress indicator, and focus management across stage
+  transitions for keyboard and screen-reader users, plus a `usePressable`
+  keyboard/touch input abstraction.
+- Added a shared `ResultScreen` and wired `/play/:lessonSlug` and
+  `/play/:lessonSlug/result` to the runtime.
+- Added a `LevelDefinition` Zod schema and a non-shippable reference/demo game
+  (`src/games/_reference-game`, at `/play/runtime-fixture`) proving the contract
+  end-to-end.
+- Real catalog lessons without a built game render an honest "not built yet"
+  placeholder until their mini-games ship.
+
+### 2026-07-13 — Feature 05: Event Bubbling Bubbles (First Mini-Game)
+
+- Built the first real, shippable mini-game
+  (`src/games/event-bubbling-bubbles`) against the feature 04 runtime contract
+  with no forking: discover/apply/master levels teaching DOM event bubbling and
+  propagation through a nested-bubble tap metaphor, with pure domain logic
+  (`domain/bubbling.ts`) computing the reacting-layer set for a tap and
+  comparing it against the learner's selection.
+- The master level introduces `stopPropagation`-equivalent "stop" placement: the
+  learner places a stop at a layer, then predicts the new reacting set — the
+  stopped layer still reacts, nothing further outward does.
+- A GSAP timeline animates the bubble outward through reacting layers on the
+  runtime's `simulating` stage, with a reduced-motion fallback that steps
+  through the same sequence via staged highlights instead of continuous motion.
+- Added the centralized audio service (`src/lib/audio/audioService.ts`) — a
+  small Web Audio abstraction synthesizing short tones per cue rather than
+  loading sample files — and a haptics service stub
+  (`src/lib/haptics/hapticsService.ts`, a no-op until Capacitor in feature 12).
+  Both are globally disableable and never the sole feedback channel.
+- Unit tests cover the domain logic and win/failure evaluation, alongside a
+  component test suite (correct/incorrect predictions, master stop placement,
+  keyboard-only playthrough) and Storybook stories for the key game states.
+
 ### 2026-07-13 — Feature 06: Authentication and Persistent Progress
 
 - Added the app's first backend. A learner can sign up, sign in, play Event
