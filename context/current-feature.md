@@ -30,6 +30,33 @@ Branch: `main` until a concrete feature or fix is scoped, then branch per task.
 
 <!-- Completed features (append only) -->
 
+### Event Bubbling Bubbles (First Mini-Game)
+
+- Built the first real, shippable mini-game (`src/games/event-bubbling-bubbles`)
+  against the feature 04 runtime contract with no forking: discover/apply/
+  master levels teaching DOM event bubbling/propagation through a
+  nested-bubble tap metaphor, with pure domain logic (`domain/bubbling.ts`)
+  computing the reacting-layer set for a tap and comparing it against the
+  learner's selection.
+- Master level introduces stopPropagation-equivalent "stop" placement: the
+  learner places a stop at a layer, then predicts the new reacting set — the
+  stopped layer still reacts, nothing further outward does.
+- GSAP timeline animates the bubble outward through reacting layers on the
+  runtime's `simulating` stage, with a reduced-motion fallback that steps
+  through the same sequence via staged highlights instead of continuous motion.
+- Added the centralized audio service (`src/lib/audio/audioService.ts`) —
+  a small Web Audio abstraction synthesizing short tones per cue rather than
+  loading sample files — and a haptics service stub (`src/lib/haptics/
+  hapticsService.ts`, no-op until Capacitor in feature 12). Both are globally
+  disableable and never the sole feedback channel.
+- Wired into `/play/event-bubbling-bubbles` and its result screen.
+- Unit tests cover the domain logic and win/failure evaluation, plus a
+  component test suite (correct/incorrect predictions, master stop
+  placement, keyboard-only playthrough). Storybook stories cover the
+  predicting, master stop-placement, transfer, and explaining game states,
+  plus the shared `BubbleLayerList` visual in mid-propagation, success, and
+  mistake states.
+
 ### App Shell, Navigation, and Track/Lesson Catalog
 
 - Added a typed, Zod-validated learning catalog (`src/learning`): `Track` and
