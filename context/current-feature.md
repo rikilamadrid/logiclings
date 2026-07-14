@@ -1,49 +1,25 @@
-# Current Feature: Cache the Crowd (Second Mini-Game)
+# Current Feature
 
 Use this file as the live tracker for what is active now. Keep it lean. When a
 feature lands, summarize the completed work in `context/history.md` and move
 this file forward to the next task.
 
-Branch: `feature/09-cache-the-crowd`
+Branch: `main` until a concrete feature or fix is scoped, then branch per task.
 
 ## Status
 
-In Progress
+Not Started
 
 ## Goals
 
-- Build the second mini-game, **Cache the Crowd**, teaching caching
-  fundamentals (cache hit/miss, TTL, invalidation, thundering herd) through a
-  crowd-of-requests-vs-venue metaphor.
-- Prove the feature 04 runtime contract against a second, structurally
-  different interaction family (balance resources / simulate load) vs. Event
-  Bubbling Bubbles' trace-execution genre.
-- Learner sets a cache TTL/invalidation rule before a simulated traffic wave
-  runs (predict-before-reveal), then watches requests hit cache vs. origin,
-  with origin "strain" shown as a resource/balance meter.
-- Three levels (discover/apply/master) against the runtime's level modes;
-  master level introduces a real tradeoff (stale-data risk vs. origin load, or
-  a mistimed invalidation causing a stampede).
-- Fully playable with sound off, reduced-motion on, and keyboard-only.
+<!-- What success looks like for the active feature -->
 
 ---
 
 ## Notes
 
-- Misconception targeted: caching is "free" — ignoring staleness, TTL-expiry
-  thundering herd, or incorrect invalidation causing stale reads.
-- Reuse feature 04 runtime, feature 05 audio/haptics services, feature 08
-  achievement hooks — extend the runtime deliberately (e.g. a resource/meter
-  primitive) rather than forking behavior inside the game folder, and document
-  any extension.
-- DOM/SVG first, no PixiJS/canvas. No real backend caching — simulated,
-  client-side visualization only. No new achievement types.
-- Mobile-first layout for crowd/venue/cache visualization, legible at small
-  viewport widths; pause/slow controls if the traffic-wave animation is fast.
-- Likely files: `src/games/cache-the-crowd/{CacheTheCrowdGame.tsx, levels/{discover,apply,master}.ts, CacheTheCrowdGame.stories.tsx, CacheTheCrowdGame.test.tsx, reflection.ts}`,
-  plus `src/games/shared/` additions only if a resource/meter primitive is
-  genuinely reusable.
-- Full spec: `context/features/09-cache-the-crowd.md`.
+<!-- Constraints, decisions, and details from the spec -->
+
 - Keep this file current before implementation starts.
 - Update it again after merge so it reflects reality on `main`.
 - Do not let this turn into a full project diary; that belongs in `context/history.md`.
@@ -53,6 +29,37 @@ In Progress
 ## History
 
 <!-- Completed features (append only) -->
+
+### Cache the Crowd (Second Mini-Game)
+
+- Built the second mini-game (`src/games/cache-the-crowd`) against the feature
+  04 runtime contract, proving it against a "balance resources" interaction
+  family distinct from Event Bubbling Bubbles' trace-execution genre: pure
+  domain simulation (`domain/cache.ts`) replays a wave of visitor requests
+  against a single-resource-keyed cache given a learner-chosen TTL and (at
+  master) a purge timing, tracking hit/miss outcomes and origin-server strain.
+- Three levels (discover/apply/master): discover and apply vary only the TTL
+  choice across bigger waves; master adds a purge-timing choice whose tradeoff
+  is real — a mistimed purge flushes the whole cache right as a burst of
+  requests arrives, so several different resources miss together instead of
+  one at a time (a thundering herd), verified live at 100/100 origin strain
+  when the purge lands mid-burst vs. a safe early purge.
+- Added a new shared `ResourceMeter` primitive (`src/games/shared/ResourceMeter`)
+  for visualizing a bounded resource/strain value — status conveyed through
+  text and a `data-status` attribute, never color alone — intended for reuse
+  by future resource-balancing games.
+- Reused the existing runtime, audio/haptics services (`valid`/`invalid` cues
+  for hit/miss, `success`/`mistake` for the round result), and achievement-award
+  hooks unchanged; no new runtime, sound, or achievement types were needed.
+- Wired into `/play/cache-the-crowd` and its result screen. Unit tests cover
+  the cache simulation (hit/miss, TTL expiry, thundering herd) and the game's
+  win/failure grading; component tests cover keyboard-only and reduced-motion
+  playthroughs. Storybook stories cover the predicting, master purge-timing,
+  transfer, and explaining game states, plus the shared visitor-wave list in
+  mid-wave, thundering-herd, and all-hits result states.
+- Manually verified in a real browser: full discover playthrough end to end,
+  the master level's purge-timing tradeoff, and a 390px mobile viewport, with
+  no console errors.
 
 ### Profile and Progress Screen
 
