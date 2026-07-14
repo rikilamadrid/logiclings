@@ -1,4 +1,4 @@
-# Current Feature: Profile and Progress Screen
+# Current Feature
 
 Use this file as the live tracker for what is active now. Keep it lean. When a
 feature lands, summarize the completed work in `context/history.md` and move
@@ -8,23 +8,11 @@ Branch: `main` until a concrete feature or fix is scoped, then branch per task.
 
 ## Status
 
-In Progress
+Not Started
 
 ## Goals
 
-- Add an `Achievement` model (`slug`, `title`, `description`, `iconKey`) plus a
-  user-achievement join model, with a migration and a small seeded starter set
-  (e.g., "first completion," "3-day streak," "track mastered").
-- Achievement-award service that evaluates completed attempts/streak updates
-  and awards new achievements, triggered from the existing completion/streak
-  flows (features 06/07) rather than polled.
-- Real Profile page (`/profile`) with: completed-lessons list, per-track
-  mastery summary, streak calendar/summary, and an achievements grid
-  (earned vs. locked), replacing the feature-03 skeleton.
-- Handle loading/error/empty states throughout, including an encouraging
-  empty state for a brand-new user with no completions.
-- API endpoint(s) for aggregated profile data for the current signed-in user,
-  designed to avoid N+1 queries.
+<!-- What success looks like for the active feature -->
 
 ---
 
@@ -32,20 +20,6 @@ In Progress
 
 <!-- Constraints, decisions, and details from the spec -->
 
-- Spec: `context/features/08-profile-progress-screen.md`.
-- Out of scope: Settings screen functionality, saved/favorite lessons, social
-  profile pages, final achievement icon artwork (placeholders are fine).
-- Reuse feature 02 primitives/tokens for badges, cards, grid layout — no new
-  one-off components where an existing primitive fits.
-- Server rules: session ownership checks on the profile endpoint, service
-  layer between route handlers and Prisma (per `context/coding-standards.md`).
-- Streak calendar must be understandable without color alone (icon/text +
-  color for qualifying days).
-- Acceptance: real data renders for all four sections; new-user empty states;
-  achievement awarding covered by unit tests (e.g., first completion awards
-  exactly once); Storybook stories for populated + empty states; `npm run
-  build` passes; `CHANGELOG.md` updated under `## [Unreleased]`.
-- Suggested branch: `feature/08-profile-progress-screen`.
 - Keep this file current before implementation starts.
 - Update it again after merge so it reflects reality on `main`.
 - Do not let this turn into a full project diary; that belongs in `context/history.md`.
@@ -55,6 +29,36 @@ In Progress
 ## History
 
 <!-- Completed features (append only) -->
+
+### Profile and Progress Screen
+
+- Added `Achievement` and `UserAchievement` Prisma models with a migration.
+  Achievement definitions (`slug`, `title`, `description`, `iconKey`) stay
+  typed, local catalog data (`src/achievements/catalog`) like tracks/lessons;
+  the achievement service upserts them into the `Achievement` table by slug
+  the first time each is evaluated.
+- Pure achievement-award rules (`src/server/services/achievementService.ts`):
+  "First Steps" on a learner's first completed lesson, "On a Roll" at a
+  3-day streak, "Track Master" once every catalog lesson in a track reaches
+  `mastered`. Evaluated as part of the existing completion mutation
+  (`POST /api/progress/complete`) rather than polled, and idempotent on
+  `(userId, achievementId)`.
+- `GET /api/achievements` returns the signed-in learner's earned
+  achievements, same session → service → repository layering as
+  progress/streak.
+- Real Profile page (`/profile`): completed lessons, per-track mastery,
+  streak summary, and an earned/locked achievements grid, composed from the
+  existing progress/streak/achievement/catalog queries rather than a new
+  aggregation endpoint — the joins are cheap, in-memory, and per-user.
+  Loading/error/empty states throughout, including an encouraging new-user
+  state.
+- `AchievementGrid`, `StreakSummary`, and `TrackMasteryList` organisms reuse
+  the feature 02 `Card`/`Badge`/`Heading`/`Text` primitives and the existing
+  `LessonListItem` molecule, with Storybook stories for populated,
+  partially-earned, and empty states.
+- Unit tests cover the achievement award rules (first completion awards
+  exactly once) and the achievements route; component tests cover the
+  profile page's signed-out, empty, and populated states.
 
 ### Timezone-Aware Streak Tracking
 
