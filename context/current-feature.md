@@ -1,25 +1,49 @@
-# Current Feature
+# Current Feature: Cache the Crowd (Second Mini-Game)
 
 Use this file as the live tracker for what is active now. Keep it lean. When a
 feature lands, summarize the completed work in `context/history.md` and move
 this file forward to the next task.
 
-Branch: `main` until a concrete feature or fix is scoped, then branch per task.
+Branch: `feature/09-cache-the-crowd`
 
 ## Status
 
-Not Started
+In Progress
 
 ## Goals
 
-<!-- What success looks like for the active feature -->
+- Build the second mini-game, **Cache the Crowd**, teaching caching
+  fundamentals (cache hit/miss, TTL, invalidation, thundering herd) through a
+  crowd-of-requests-vs-venue metaphor.
+- Prove the feature 04 runtime contract against a second, structurally
+  different interaction family (balance resources / simulate load) vs. Event
+  Bubbling Bubbles' trace-execution genre.
+- Learner sets a cache TTL/invalidation rule before a simulated traffic wave
+  runs (predict-before-reveal), then watches requests hit cache vs. origin,
+  with origin "strain" shown as a resource/balance meter.
+- Three levels (discover/apply/master) against the runtime's level modes;
+  master level introduces a real tradeoff (stale-data risk vs. origin load, or
+  a mistimed invalidation causing a stampede).
+- Fully playable with sound off, reduced-motion on, and keyboard-only.
 
 ---
 
 ## Notes
 
-<!-- Constraints, decisions, and details from the spec -->
-
+- Misconception targeted: caching is "free" — ignoring staleness, TTL-expiry
+  thundering herd, or incorrect invalidation causing stale reads.
+- Reuse feature 04 runtime, feature 05 audio/haptics services, feature 08
+  achievement hooks — extend the runtime deliberately (e.g. a resource/meter
+  primitive) rather than forking behavior inside the game folder, and document
+  any extension.
+- DOM/SVG first, no PixiJS/canvas. No real backend caching — simulated,
+  client-side visualization only. No new achievement types.
+- Mobile-first layout for crowd/venue/cache visualization, legible at small
+  viewport widths; pause/slow controls if the traffic-wave animation is fast.
+- Likely files: `src/games/cache-the-crowd/{CacheTheCrowdGame.tsx, levels/{discover,apply,master}.ts, CacheTheCrowdGame.stories.tsx, CacheTheCrowdGame.test.tsx, reflection.ts}`,
+  plus `src/games/shared/` additions only if a resource/meter primitive is
+  genuinely reusable.
+- Full spec: `context/features/09-cache-the-crowd.md`.
 - Keep this file current before implementation starts.
 - Update it again after merge so it reflects reality on `main`.
 - Do not let this turn into a full project diary; that belongs in `context/history.md`.

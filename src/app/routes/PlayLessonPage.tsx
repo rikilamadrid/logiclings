@@ -11,10 +11,13 @@ import {
 } from '../../games/_reference-game/fixture'
 import { eventBubblingGameDefinition } from '../../games/event-bubbling-bubbles/gameDefinition'
 import { getEventBubblingLevel } from '../../games/event-bubbling-bubbles/levels'
+import { cacheTheCrowdGameDefinition } from '../../games/cache-the-crowd/gameDefinition'
+import { getCacheTheCrowdLevel } from '../../games/cache-the-crowd/levels'
 import { useLessonsQuery } from '../../learning/queries'
 import type { LevelMode } from '../../learning/schemas/level'
 
 const EVENT_BUBBLING_LESSON_SLUG = 'event-bubbling-bubbles'
+const CACHE_THE_CROWD_LESSON_SLUG = 'cache-the-crowd'
 
 const VALID_MODES: LevelMode[] = ['discover', 'apply', 'master']
 
@@ -59,6 +62,21 @@ export function PlayLessonPage() {
           lessonSlug={lessonSlug}
           level={level}
           game={eventBubblingGameDefinition}
+          onComplete={handleComplete}
+        />
+      </Container>
+    )
+  }
+
+  if (lessonSlug === CACHE_THE_CROWD_LESSON_SLUG) {
+    const level = getCacheTheCrowdLevel(parseLevelMode(searchParams.get('mode')))
+
+    return (
+      <Container padding="none">
+        <GameHost
+          lessonSlug={lessonSlug}
+          level={level}
+          game={cacheTheCrowdGameDefinition}
           onComplete={handleComplete}
         />
       </Container>

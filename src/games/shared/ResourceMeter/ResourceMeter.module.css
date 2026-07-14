@@ -1,0 +1,39 @@
+.meter {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2xs);
+}
+
+.header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-sm);
+}
+
+.track {
+  width: 100%;
+  height: var(--space-md);
+  border-radius: var(--radius-full);
+  background: var(--color-surface-muted);
+  border: var(--border-width-sm) solid var(--color-border);
+  overflow: hidden;
+}
+
+.fill {
+  height: 100%;
+  border-radius: var(--radius-full);
+  transition: width var(--motion-duration-base) var(--motion-easing-standard);
+}
+
+.fill[data-status='calm'] {
+  background: var(--color-success);
+}
+
+.fill[data-status='busy'] {
+  background: var(--color-warning);
+}
+
+.fill[data-status='strained'] {
+  background: var(--color-danger);
+}

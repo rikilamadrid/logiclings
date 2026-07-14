@@ -10,6 +10,8 @@ import {
 } from '../../games/_reference-game/fixture'
 import { getEventBubblingLevel } from '../../games/event-bubbling-bubbles/levels'
 import { getEventBubblingTransferQuestion } from '../../games/event-bubbling-bubbles/reflection'
+import { getCacheTheCrowdLevel } from '../../games/cache-the-crowd/levels'
+import { getCacheTheCrowdTransferQuestion } from '../../games/cache-the-crowd/reflection'
 import { getLessonBySlug } from '../../learning/catalog/lessons'
 import { SaveProgressPanel } from '../../features/progress/SaveProgressPanel'
 import {
@@ -18,6 +20,7 @@ import {
 } from '../../features/progress/recentResult'
 
 const EVENT_BUBBLING_LESSON_SLUG = 'event-bubbling-bubbles'
+const CACHE_THE_CROWD_LESSON_SLUG = 'cache-the-crowd'
 
 export function PlayResultPage() {
   const { lessonSlug } = useParams<{ lessonSlug: string }>()
@@ -60,6 +63,27 @@ export function PlayResultPage() {
           level={level}
           result={result}
           transferQuestion={getEventBubblingTransferQuestion(result.levelMode)}
+          onRetry={() => navigate(`/play/${lessonSlug}?mode=${result.levelMode}`)}
+          onContinue={() => navigate('/')}
+        />
+
+        {lesson ? (
+          <SaveProgressPanel result={result} lesson={lesson} level={level} />
+        ) : null}
+      </Container>
+    )
+  }
+
+  if (lessonSlug === CACHE_THE_CROWD_LESSON_SLUG) {
+    const level = getCacheTheCrowdLevel(result.levelMode)
+    const lesson = getLessonBySlug(lessonSlug)
+
+    return (
+      <Container padding="none">
+        <ResultScreen
+          level={level}
+          result={result}
+          transferQuestion={getCacheTheCrowdTransferQuestion(result.levelMode)}
           onRetry={() => navigate(`/play/${lessonSlug}?mode=${result.levelMode}`)}
           onContinue={() => navigate('/')}
         />

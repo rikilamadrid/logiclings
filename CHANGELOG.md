@@ -9,6 +9,36 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 
 ### Added
 
+- **Cache the Crowd (second mini-game)** — teaches cache hit/miss, TTL
+  expiry, and invalidation-timed thundering herds through a crowd-of-visitors-
+  vs-venue metaphor, proving the feature 04 runtime contract against a
+  "balance resources" interaction family distinct from Event Bubbling
+  Bubbles' trace-execution genre.
+  - Pure domain simulation (`src/games/cache-the-crowd/domain/cache.ts`):
+    replays a wave of visitor requests against a single-resource-keyed cache
+    given a learner-chosen TTL and (at master) a purge timing, tracking
+    hit/miss outcomes and origin-server strain: a mistimed purge flushes the
+    whole cache right as a burst of requests arrives, so several different
+    resources miss together instead of one at a time.
+  - Three levels (discover/apply/master): discover and apply vary only the
+    TTL choice across bigger waves; master adds the purge-timing choice and
+    its thundering-herd tradeoff.
+  - A new shared `ResourceMeter` primitive
+    (`src/games/shared/ResourceMeter`) visualizes origin-server strain as a
+    labeled, thresholded meter — status is conveyed through text and a
+    `data-status` attribute, never color alone, and is intended for reuse by
+    future resource-balancing games.
+  - Reuses the existing runtime contract, audio/haptics services (`valid`/
+    `invalid` cues for hit/miss, `success`/`mistake` for the round result),
+    and achievement-award hooks unchanged — no new runtime, sound, or
+    achievement types were needed.
+  - Wired into `/play/cache-the-crowd` and its result screen; unit tests
+    cover the cache simulation (hit/miss, TTL expiry, thundering herd) and
+    the game's win/failure grading, plus a keyboard-only playthrough.
+    Storybook stories cover the predicting, master purge-timing, transfer,
+    and explaining game states, plus the shared visitor-wave list in
+    mid-wave, thundering-herd, and all-hits result states.
+
 - **Profile and progress screen** — `/profile` now shows a signed-in
   learner's real progress instead of the account-only skeleton: completed
   lessons, per-track mastery, streak, and achievements.
