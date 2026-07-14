@@ -1,10 +1,12 @@
 import { beforeEach, describe, expect, it } from 'vitest'
 import type { CompleteLessonRequest } from '../../lib/api/contracts'
+import { createInMemoryAchievementRepository } from '../testing/inMemoryAchievementRepository'
 import {
   createInMemoryProgressRepository,
   type InMemoryProgressRepository,
 } from '../testing/inMemoryProgressRepository'
 import { createInMemoryStreakRepository } from '../testing/inMemoryStreakRepository'
+import { createAchievementService } from './achievementService'
 import { createProgressService, type ProgressService } from './progressService'
 import { createStreakService } from './streakService'
 
@@ -46,7 +48,10 @@ describe('progressService', () => {
   beforeEach(() => {
     repository = createInMemoryProgressRepository()
     const streakService = createStreakService(createInMemoryStreakRepository())
-    service = createProgressService(repository, streakService)
+    const achievementService = createAchievementService(
+      createInMemoryAchievementRepository(),
+    )
+    service = createProgressService(repository, streakService, achievementService)
   })
 
   it('creates progress on a first passing attempt', async () => {

@@ -7,6 +7,7 @@ import type {
   ProgressRepository,
   ProgressSnapshot,
 } from '../db/progressRepository'
+import type { AchievementService } from './achievementService'
 import type { StreakService } from './streakService'
 import { isCompletedMastery, nextBestScore, nextMasteryState } from './mastery'
 
@@ -38,6 +39,7 @@ export interface ProgressService {
 export function createProgressService(
   repository: ProgressRepository,
   streakService: StreakService,
+  achievementService: AchievementService,
 ): ProgressService {
   return {
     listProgress(userId) {
@@ -108,6 +110,13 @@ export function createProgressService(
             playedAt,
             request.timezone,
           )
+
+        const allProgress = await repository.listProgress(userId)
+        await achievementService.evaluateAndAward(userId, {
+          allProgress,
+          streakCurrentDays: streak.currentDays,
+        })
+
         return { ...result, streak, streakQualified }
       }
 

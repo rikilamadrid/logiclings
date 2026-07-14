@@ -78,6 +78,9 @@ interface ServerModules {
   streakRoutes: {
     get: (request: Request) => Promise<Response>
   }
+  achievementRoutes: {
+    list: (request: Request) => Promise<Response>
+  }
 }
 
 async function loadServerModules(server: ViteDevServer): Promise<ServerModules> {
@@ -90,12 +93,13 @@ async function loadServerModules(server: ViteDevServer): Promise<ServerModules> 
     auth: authModule.auth,
     progressRoutes: containerModule.progressRoutes,
     streakRoutes: containerModule.streakRoutes,
+    achievementRoutes: containerModule.achievementRoutes,
   }
 }
 
 /** Maps a request onto the same handlers the `api/` functions call. */
 async function dispatch(
-  { auth, progressRoutes, streakRoutes }: ServerModules,
+  { auth, progressRoutes, streakRoutes, achievementRoutes }: ServerModules,
   request: Request,
 ): Promise<Response | null> {
   const { pathname } = new URL(request.url)
@@ -114,6 +118,10 @@ async function dispatch(
 
   if (pathname === '/api/streak') {
     return streakRoutes.get(request)
+  }
+
+  if (pathname === '/api/achievements') {
+    return achievementRoutes.list(request)
   }
 
   return null

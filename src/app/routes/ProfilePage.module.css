@@ -17,6 +17,19 @@
   margin-top: var(--space-lg);
 }
 
+.section {
+  margin-top: var(--space-xl);
+}
+
+.lessonList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+  margin: var(--space-sm) 0 0;
+  padding: 0;
+  list-style: none;
+}
+
 .primaryLink {
   display: inline-flex;
   align-items: center;

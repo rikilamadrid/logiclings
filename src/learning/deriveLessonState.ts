@@ -5,6 +5,11 @@ export type LessonState = 'locked' | 'available' | 'completed'
 
 const completedMasteryStates: MasteryState[] = ['applied', 'mastered']
 
+/** A lesson counts as completed in the catalog once mastery reaches `applied`. */
+export function isCompletedMastery(mastery: MasteryState): boolean {
+  return completedMasteryStates.includes(mastery)
+}
+
 export function deriveLessonState(
   lesson: Lesson,
   masteryByLessonId: ReadonlyMap<string, MasteryState>,

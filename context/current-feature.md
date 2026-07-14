@@ -1,4 +1,4 @@
-# Current Feature
+# Current Feature: Profile and Progress Screen
 
 Use this file as the live tracker for what is active now. Keep it lean. When a
 feature lands, summarize the completed work in `context/history.md` and move
@@ -8,11 +8,23 @@ Branch: `main` until a concrete feature or fix is scoped, then branch per task.
 
 ## Status
 
-Not Started
+In Progress
 
 ## Goals
 
-<!-- What success looks like for the active feature -->
+- Add an `Achievement` model (`slug`, `title`, `description`, `iconKey`) plus a
+  user-achievement join model, with a migration and a small seeded starter set
+  (e.g., "first completion," "3-day streak," "track mastered").
+- Achievement-award service that evaluates completed attempts/streak updates
+  and awards new achievements, triggered from the existing completion/streak
+  flows (features 06/07) rather than polled.
+- Real Profile page (`/profile`) with: completed-lessons list, per-track
+  mastery summary, streak calendar/summary, and an achievements grid
+  (earned vs. locked), replacing the feature-03 skeleton.
+- Handle loading/error/empty states throughout, including an encouraging
+  empty state for a brand-new user with no completions.
+- API endpoint(s) for aggregated profile data for the current signed-in user,
+  designed to avoid N+1 queries.
 
 ---
 
@@ -20,6 +32,20 @@ Not Started
 
 <!-- Constraints, decisions, and details from the spec -->
 
+- Spec: `context/features/08-profile-progress-screen.md`.
+- Out of scope: Settings screen functionality, saved/favorite lessons, social
+  profile pages, final achievement icon artwork (placeholders are fine).
+- Reuse feature 02 primitives/tokens for badges, cards, grid layout — no new
+  one-off components where an existing primitive fits.
+- Server rules: session ownership checks on the profile endpoint, service
+  layer between route handlers and Prisma (per `context/coding-standards.md`).
+- Streak calendar must be understandable without color alone (icon/text +
+  color for qualifying days).
+- Acceptance: real data renders for all four sections; new-user empty states;
+  achievement awarding covered by unit tests (e.g., first completion awards
+  exactly once); Storybook stories for populated + empty states; `npm run
+  build` passes; `CHANGELOG.md` updated under `## [Unreleased]`.
+- Suggested branch: `feature/08-profile-progress-screen`.
 - Keep this file current before implementation starts.
 - Update it again after merge so it reflects reality on `main`.
 - Do not let this turn into a full project diary; that belongs in `context/history.md`.

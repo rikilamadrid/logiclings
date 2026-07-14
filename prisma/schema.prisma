@@ -40,11 +40,12 @@ model User {
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
 
-  sessions Session[]
-  accounts Account[]
-  progress UserProgress[]
-  attempts Attempt[]
-  streak   Streak?
+  sessions     Session[]
+  accounts     Account[]
+  progress     UserProgress[]
+  attempts     Attempt[]
+  streak       Streak?
+  achievements UserAchievement[]
 
   @@map("user")
 }
@@ -167,4 +168,39 @@ model Streak {
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("streak")
+}
+
+/// A definition a learner can earn, per the Core Data Models. Rows are
+/// upserted by slug from the local achievement catalog (`src/achievements`)
+/// the first time the achievement service evaluates them, so the catalog
+/// stays the single typed source of truth for title/description/iconKey.
+model Achievement {
+  id          String   @id @default(cuid())
+  slug        String   @unique
+  title       String
+  description String
+  iconKey     String
+
+  createdAt DateTime @default(now())
+
+  earnedBy UserAchievement[]
+
+  @@map("achievement")
+}
+
+/// One row per (user, achievement) the user has earned. Awarding is
+/// idempotent on this pair — evaluating the same qualifying event twice
+/// never earns an achievement a second time.
+model UserAchievement {
+  id            String   @id @default(cuid())
+  userId        String
+  achievementId String
+  earnedAt      DateTime @default(now())
+
+  user        User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  achievement Achievement @relation(fields: [achievementId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, achievementId])
+  @@index([userId])
+  @@map("user_achievement")
 }

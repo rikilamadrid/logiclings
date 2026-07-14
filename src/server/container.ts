@@ -1,8 +1,11 @@
+import { achievementRepository } from './db/achievementRepository'
 import { progressRepository } from './db/progressRepository'
 import { streakRepository } from './db/streakRepository'
 import { getSessionUserId } from './http/session'
+import { createAchievementRoutes } from './routes/achievements'
 import { createProgressRoutes } from './routes/progress'
 import { createStreakRoutes } from './routes/streak'
+import { createAchievementService } from './services/achievementService'
 import { createProgressService } from './services/progressService'
 import { createStreakService } from './services/streakService'
 
@@ -14,9 +17,12 @@ import { createStreakService } from './services/streakService'
  */
 export const streakService = createStreakService(streakRepository)
 
+export const achievementService = createAchievementService(achievementRepository)
+
 export const progressService = createProgressService(
   progressRepository,
   streakService,
+  achievementService,
 )
 
 export const progressRoutes = createProgressRoutes({
@@ -27,4 +33,9 @@ export const progressRoutes = createProgressRoutes({
 export const streakRoutes = createStreakRoutes({
   getUserId: getSessionUserId,
   service: streakService,
+})
+
+export const achievementRoutes = createAchievementRoutes({
+  getUserId: getSessionUserId,
+  service: achievementService,
 })

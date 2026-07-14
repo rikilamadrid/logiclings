@@ -12,6 +12,7 @@ import type {
   ProgressRecord,
 } from '../../lib/api/contracts'
 import { useSession } from '../../lib/auth/authClient'
+import { achievementQueryKeys } from '../achievements/queries'
 import { streakQueryKeys } from '../streaks/queries'
 
 export const progressQueryKeys = {
@@ -84,6 +85,7 @@ export function useCompleteLessonMutation() {
     onSuccess: () => {
       void queryClient.invalidateQueries({ queryKey: progressQueryKeys.all })
       void queryClient.invalidateQueries({ queryKey: streakQueryKeys.all })
+      void queryClient.invalidateQueries({ queryKey: achievementQueryKeys.all })
     },
   })
 }

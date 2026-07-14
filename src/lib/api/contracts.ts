@@ -1,6 +1,7 @@
 import { z } from 'zod'
 import { masteryStateSchema } from '../../learning/schemas/lesson'
 import { levelModeSchema } from '../../learning/schemas/level'
+import { achievementSlugSchema } from '../../achievements/schemas/achievement'
 
 /**
  * Wire contract for the progress API. Imported by both the Vercel Functions
@@ -116,6 +117,23 @@ export const completeLessonResponseSchema = z.object({
 })
 
 export type CompleteLessonResponse = z.infer<typeof completeLessonResponseSchema>
+
+/** An achievement the learner has earned, as returned by the API. */
+export const achievementRecordSchema = z.object({
+  slug: achievementSlugSchema,
+  title: z.string(),
+  description: z.string(),
+  iconKey: z.string(),
+  earnedAt: z.iso.datetime(),
+})
+
+export type AchievementRecord = z.infer<typeof achievementRecordSchema>
+
+export const achievementListResponseSchema = z.object({
+  achievements: z.array(achievementRecordSchema),
+})
+
+export type AchievementListResponse = z.infer<typeof achievementListResponseSchema>
 
 export const apiErrorSchema = z.object({
   error: z.object({

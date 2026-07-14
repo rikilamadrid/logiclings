@@ -5,8 +5,10 @@ import type {
   CompleteLessonResponse,
   ProgressListResponse,
 } from '../../lib/api/contracts'
+import { createAchievementService } from '../services/achievementService'
 import { createProgressService } from '../services/progressService'
 import { createStreakService } from '../services/streakService'
+import { createInMemoryAchievementRepository } from '../testing/inMemoryAchievementRepository'
 import { createInMemoryProgressRepository } from '../testing/inMemoryProgressRepository'
 import { createInMemoryStreakRepository } from '../testing/inMemoryStreakRepository'
 import { createProgressRoutes, type ProgressRoutes } from './progress'
@@ -65,9 +67,12 @@ describe('progress routes', () => {
     repository = createInMemoryProgressRepository()
     currentUserId = USER
     const streakService = createStreakService(createInMemoryStreakRepository())
+    const achievementService = createAchievementService(
+      createInMemoryAchievementRepository(),
+    )
     routes = createProgressRoutes({
       getUserId: async () => currentUserId,
-      service: createProgressService(repository, streakService),
+      service: createProgressService(repository, streakService, achievementService),
     })
   })
 

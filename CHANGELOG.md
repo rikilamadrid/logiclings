@@ -9,6 +9,42 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 
 ### Added
 
+- **Profile and progress screen** — `/profile` now shows a signed-in
+  learner's real progress instead of the account-only skeleton: completed
+  lessons, per-track mastery, streak, and achievements.
+  - `Achievement` and `UserAchievement` Prisma models, with a migration.
+    Achievement definitions (`slug`, `title`, `description`, `iconKey`) stay
+    typed, local catalog data (`src/achievements/catalog`), the same way
+    lesson/track content does; the achievement service upserts them into the
+    `Achievement` table by slug the first time each is evaluated, so the
+    catalog is the one place their copy is edited.
+  - Pure achievement-award rules (`src/server/services/achievementService.ts`):
+    "First Steps" on a learner's first completed lesson, "On a Roll" at a
+    3-day streak, and "Track Master" once every catalog lesson in a track
+    reaches `mastered`. Evaluated as part of the existing completion mutation
+    (`POST /api/progress/complete`) rather than polled, and idempotent on
+    `(userId, achievementId)` so a qualifying event can never award an
+    achievement twice.
+  - `GET /api/achievements` returns the signed-in learner's earned
+    achievements. Same layering as progress/streak: route handler → session
+    check → domain service → Prisma repository.
+  - The profile screen composes its four sections from the existing
+    progress, streak, achievement, and catalog queries rather than a new
+    aggregation endpoint — per-track mastery and the completed-lessons list
+    are cheap in-memory joins of one learner's rows against the fixed local
+    catalog, so a bespoke endpoint would cost more than it saves.
+  - Loading, error, and empty states throughout: a brand-new user sees an
+    encouraging "play your first lesson" prompt, a streak card inviting them
+    to start one, and a fully locked (not blank) achievements grid — never an
+    error or a blank section.
+  - `AchievementGrid`, `StreakSummary`, and `TrackMasteryList` organisms,
+    reusing the feature 02 `Card`/`Badge`/`Heading`/`Text` primitives and the
+    existing `LessonListItem` molecule for the completed-lessons list, with
+    Storybook stories for populated, partially-earned, and empty states.
+  - Unit tests cover the achievement award rules (including that "First
+    Steps" is awarded exactly once) and the achievements route; component
+    tests cover the profile page's signed-out, empty, and populated states.
+
 - **Timezone-aware streak tracking** — completing a lesson counts toward the
   learner's daily streak, using their own timezone rather than server/UTC time.
   - `Streak` Prisma model (`currentDays`, `longestDays`, `lastQualifiedDate`,
@@ -178,8 +214,6 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 - `GameResult` now carries `startedAt` and a `clientAttemptId` generated when an
   attempt finishes, so every mini-game gets an idempotency key for the completion
   mutation without each game inventing one.
-- The Profile page carries account state (sign in / sign out); the full
-  progress/streak/achievement profile remains feature 08.
 - Rewrote `CLAUDE.md` and `context/coding-standards.md` to reflect the actual
   Logiclings stack (Vite, React Router, CSS Modules/custom properties, TanStack
   Query, Zod, Better Auth, Prisma) instead of the generic starter-kit defaults.
