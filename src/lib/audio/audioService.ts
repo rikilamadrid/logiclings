@@ -6,6 +6,7 @@ export type SoundCue =
   | 'success'
   | 'mistake'
   | 'streak'
+  | 'exceeded'
 
 interface ToneShape {
   frequency: number
@@ -20,6 +21,7 @@ const CUE_TONES: Record<SoundCue, ToneShape> = {
   success: { frequency: 659, durationMs: 220 },
   mistake: { frequency: 196, durationMs: 220 },
   streak: { frequency: 784, durationMs: 180 },
+  exceeded: { frequency: 155, durationMs: 130 },
 }
 
 /**

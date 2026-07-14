@@ -1,4 +1,4 @@
-# Current Feature
+# Current Feature: Context Packager (Third Mini-Game)
 
 Use this file as the live tracker for what is active now. Keep it lean. When a
 feature lands, summarize the completed work in `context/history.md` and move
@@ -8,18 +8,51 @@ Branch: `main` until a concrete feature or fix is scoped, then branch per task.
 
 ## Status
 
-Not Started
+In Progress
 
 ## Goals
 
-<!-- What success looks like for the active feature -->
+- Build the third mini-game, Context Packager, against the existing runtime
+  contract (feature 04), teaching agentic-coding context management (what to
+  include/exclude when assembling context for an AI coding agent, and the
+  cost of an over-full context window).
+- Packing/prioritization metaphor: learner selects which available items
+  (relevant file, unrelated file, stale note, prior decision, spec snippet,
+  huge log dump) to include in a context "package" within a visible budget,
+  before seeing a simulated agent response-quality/cost outcome.
+- Three levels (discover/apply/master); master introduces a genuine tradeoff
+  (e.g. a large-but-sometimes-necessary log excerpt, or mutually exclusive
+  items that can't both fit).
+- Fully specified learning design fields per `context/project-overview.md`,
+  targeting the misconception that more context is always better.
+- Keyboard/touch accessible packing (not drag-and-drop only); reduced-motion
+  and sound-off must each independently allow understanding the outcome.
+- Reuse the feature 09 meter primitive for the budget visualization if the
+  shapes genuinely match, rather than duplicating it.
+- Content must model safe agentic-coding practice per the Security and
+  Privacy guidance (no depicting real secrets as a valid "include").
 
 ---
 
 ## Notes
 
-<!-- Constraints, decisions, and details from the spec -->
-
+- Suggested branch: `feature/10-context-packager`.
+- Suggested commit: `feat: add Context Packager mini-game`.
+- Likely files: `src/games/context-packager/ContextPackagerGame.tsx`,
+  `src/games/context-packager/levels/{discover,apply,master}.ts`,
+  `ContextPackagerGame.stories.tsx`, `ContextPackagerGame.test.tsx`,
+  `reflection.ts`, and possibly `src/games/shared/BudgetMeter/...`.
+- Out of scope: any other mini-game, real integration with a live AI agent
+  (the agent response is simulated/scripted), new runtime capabilities beyond
+  what's genuinely reusable, PixiJS/canvas rendering.
+- Acceptance: all three levels playable end-to-end through the runtime and
+  shared result/reflection screen; completable with sound off and reduced
+  motion on; keyboard-only playthrough possible; unit tests cover
+  packing/budget logic and win/failure; Storybook covers initial, packed
+  within budget, over budget, success, mistake, transfer states; content
+  reviewed against security/privacy guidance; `npm run build` passes;
+  `CHANGELOG.md` updated under `## [Unreleased]`.
+- Full spec: `context/features/10-context-packager.md`.
 - Keep this file current before implementation starts.
 - Update it again after merge so it reflects reality on `main`.
 - Do not let this turn into a full project diary; that belongs in `context/history.md`.

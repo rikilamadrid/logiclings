@@ -12,6 +12,8 @@ import { getEventBubblingLevel } from '../../games/event-bubbling-bubbles/levels
 import { getEventBubblingTransferQuestion } from '../../games/event-bubbling-bubbles/reflection'
 import { getCacheTheCrowdLevel } from '../../games/cache-the-crowd/levels'
 import { getCacheTheCrowdTransferQuestion } from '../../games/cache-the-crowd/reflection'
+import { getContextPackagerLevel } from '../../games/context-packager/levels'
+import { getContextPackagerTransferQuestion } from '../../games/context-packager/reflection'
 import { getLessonBySlug } from '../../learning/catalog/lessons'
 import { SaveProgressPanel } from '../../features/progress/SaveProgressPanel'
 import {
@@ -21,6 +23,7 @@ import {
 
 const EVENT_BUBBLING_LESSON_SLUG = 'event-bubbling-bubbles'
 const CACHE_THE_CROWD_LESSON_SLUG = 'cache-the-crowd'
+const CONTEXT_PACKAGER_LESSON_SLUG = 'context-packager'
 
 export function PlayResultPage() {
   const { lessonSlug } = useParams<{ lessonSlug: string }>()
@@ -84,6 +87,27 @@ export function PlayResultPage() {
           level={level}
           result={result}
           transferQuestion={getCacheTheCrowdTransferQuestion(result.levelMode)}
+          onRetry={() => navigate(`/play/${lessonSlug}?mode=${result.levelMode}`)}
+          onContinue={() => navigate('/')}
+        />
+
+        {lesson ? (
+          <SaveProgressPanel result={result} lesson={lesson} level={level} />
+        ) : null}
+      </Container>
+    )
+  }
+
+  if (lessonSlug === CONTEXT_PACKAGER_LESSON_SLUG) {
+    const level = getContextPackagerLevel(result.levelMode)
+    const lesson = getLessonBySlug(lessonSlug)
+
+    return (
+      <Container padding="none">
+        <ResultScreen
+          level={level}
+          result={result}
+          transferQuestion={getContextPackagerTransferQuestion(result.levelMode)}
           onRetry={() => navigate(`/play/${lessonSlug}?mode=${result.levelMode}`)}
           onContinue={() => navigate('/')}
         />

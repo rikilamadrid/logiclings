@@ -9,6 +9,33 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 
 ### Added
 
+- **Context Packager (third mini-game)** — completes the three-game MVP
+  slice, teaching agentic-coding context management (what to include/exclude
+  when assembling context for an AI coding agent, and the cost of an
+  over-full context window) through a packing/budget metaphor, proving the
+  runtime contract against the Agentic Coding track and a "review/curate"
+  interaction family distinct from tracing execution or balancing load.
+  - Pure domain simulation (`src/games/context-packager/domain/packaging.ts`):
+    grades a learner's packed context items against an authored answer key,
+    computing a response-quality score that degrades for every essential
+    item left out, every distractor packed anyway (signal dilution), and for
+    going over the visible budget at all.
+  - Three levels (discover/apply/master): discover and apply vary item count
+    and budget tightness; master introduces a genuine tradeoff between a
+    costly full log dump and a cheap curated excerpt that contains the same
+    answer, targeting the misconception that more raw context is always
+    better.
+  - Reuses the existing `ResourceMeter` primitive for the context budget
+    display; adds one new `exceeded` sound/haptic cue for the moment packing
+    an item pushes the total cost over budget — a felt-in-the-moment signal
+    distinct from the end-of-round correct/incorrect grading.
+  - Wired into `/play/context-packager` and its result screen. Unit tests
+    cover the packing/budget grading logic; component tests cover keyboard-
+    only and reduced-motion playthroughs. Storybook stories cover the
+    packing, master log-dump-vs-excerpt tradeoff, transfer, and explaining
+    game states, plus the shared packing list in packing, mid-reveal, and
+    result states.
+
 - **Cache the Crowd (second mini-game)** — teaches cache hit/miss, TTL
   expiry, and invalidation-timed thundering herds through a crowd-of-visitors-
   vs-venue metaphor, proving the feature 04 runtime contract against a

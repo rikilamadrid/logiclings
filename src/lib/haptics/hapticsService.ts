@@ -1,4 +1,4 @@
-export type HapticCue = 'tap' | 'place' | 'success' | 'mistake'
+export type HapticCue = 'tap' | 'place' | 'success' | 'mistake' | 'exceeded'
 
 /**
  * Centralized haptics seam. No-op until Capacitor Haptics lands (feature 12) —
