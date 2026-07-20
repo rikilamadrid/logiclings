@@ -9,6 +9,21 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 
 ### Added
 
+- **PWA installability** — Logiclings can now be installed to a home
+  screen/app list via the browser's native install UI (no custom install
+  affordance), launching standalone with an app icon and theme color.
+  - `vite-plugin-pwa` configured with a web app manifest (name, description,
+    theme/background color, `standalone` display) and icons at all required
+    sizes, including maskable variants generated with proper safe-zone
+    padding from the feature 02 brand assets, plus an Apple touch icon for
+    iOS home-screen add.
+  - Service worker precaches shell/static assets for fast repeat loads; all
+    `/api/*` requests are configured `NetworkOnly` so authenticated progress,
+    profile, and streak reads are always fetched fresh, never served stale.
+  - `useServiceWorkerUpdate` hook plus a dismissible `UpdatePrompt` toast
+    surface a new version without silently serving stale assets or
+    interrupting active gameplay.
+
 - **Context Packager (third mini-game)** — completes the three-game MVP
   slice, teaching agentic-coding context management (what to include/exclude
   when assembling context for an AI coding agent, and the cost of an
