@@ -26,6 +26,34 @@ Not Started
 
 <!-- Completed features (append only) -->
 
+### PWA Installability
+
+- `vite-plugin-pwa` configured (`vite.config.ts`) with a full web app
+  manifest — name, description, theme/background color, `standalone`
+  display — and icons declared with both `any` and `maskable` purposes.
+- Generated maskable icon variants (`public/icons/maskable-icon-{192,512}.png`)
+  with proper 80% safe-zone padding from the existing feature 02 mascot icon
+  assets, plus an Apple touch icon (`public/icons/apple-touch-icon.png`) for
+  iOS home-screen add; `index.html` carries the matching meta/link tags.
+- Service worker precaches shell/static assets for fast repeat loads; every
+  `/api/*` request is configured `NetworkOnly` so authenticated progress,
+  profile, and streak reads always hit the network — verified with a
+  headless Playwright check that an offline reload still serves the shell
+  from cache while API calls stay network-only.
+- Decided to rely on the browser/OS's native install UI rather than a custom
+  "Install Logiclings" affordance, per product direction.
+- `useServiceWorkerUpdate` hook (`src/app/pwa/useServiceWorkerUpdate.ts`)
+  plus a dismissible `UpdatePrompt` toast organism prompt the user to
+  refresh on a new service worker version rather than silently serving
+  stale assets, wired into `App.tsx`; never a blocking modal during
+  gameplay.
+- `npm run build`, `npm run lint`, and the full Vitest suite pass.
+- Follow-up: a real Lighthouse PWA audit and manual install-prompt testing
+  on an actual mobile/desktop browser have not been run — verification so
+  far is via `npm run build` output and headless Playwright checks
+  (manifest served, service worker registers/activates, offline shell
+  reload, `/api/*` left uncached) rather than a live device.
+
 ### Context Packager (Third Mini-Game)
 
 - Built the third mini-game (`src/games/context-packager`) against the
